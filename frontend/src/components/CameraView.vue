@@ -1,6 +1,5 @@
 <template>
-  <button @click="fetchImage">Request image</button>
-  <img v-if="imageObjectURL != ''" :src="imageObjectURL" />
+  <img class="camera-image" v-if="imageObjectURL != ''" :src="imageObjectURL" />
 </template>
 
 <script>
@@ -30,7 +29,14 @@ export default {
       return '/api/get-snapshot'
     },
   },
+  mounted() {
+    setInterval(this.fetchImage, 2000)
+  },
 }
 </script>
 
-<style></style>
+<style>
+.camera-image {
+  max-width: 50%;
+}
+</style>

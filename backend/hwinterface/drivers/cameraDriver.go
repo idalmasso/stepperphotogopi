@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"time"
 
 	"github.com/dhowden/raspicam"
 	"gobot.io/x/gobot"
@@ -37,7 +38,13 @@ func NewCameraDriver() *CameraDriver {
 // Start implements the Driver interface
 func (l *CameraDriver) Start() (err error) { 
 	l.still = raspicam.NewStill()
-		
+	l.still.Timeout = 1 * time.Second
+	
+	l.still.Width=2000
+	l.still.Height=1500
+	l.still.Camera.Brightness = 50
+	l.still.Camera.Contrast = 0
+	l.still.Camera.Sharpness = 0
 	return 
 }
 
