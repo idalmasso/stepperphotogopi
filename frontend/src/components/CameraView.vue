@@ -20,7 +20,7 @@ export default {
           this.imageObjectURL = URL.createObjectURL(imageBlob)
           console.log(this.imageObjectURL)
         })
-        .error((e) => {
+        .catch((e) => {
           console.log(e)
         })
     },
