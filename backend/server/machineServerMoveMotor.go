@@ -49,7 +49,7 @@ func (s MachineServer) moveMotor(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(errResponse)
 			return
 		}
-		json.NewEncoder(w).Encode(struct{ value string }{value: "ok"})
+		json.NewEncoder(w).Encode(valueResponse{Value: "ok"})
 		w.WriteHeader(http.StatusOK)
 
 	}

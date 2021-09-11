@@ -12,14 +12,13 @@ import (
 type piController struct {
 	degreesForPhoto float64
 	processing      bool
-	endWork         chan bool
 	motor           *drivers.StepperMotorDriver
 	mutex           sync.RWMutex
 }
 
 func (c *piController) SetDegreesMovement(degrees float64) error {
 	if glog.V(3) {
-		glog.Infoln("dummyController - SetDegreesMovement called")
+		glog.Infoln("piController - SetDegreesMovement called")
 	}
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
@@ -36,16 +35,7 @@ func (c *piController) StartProcess() error {
 	if !c.canSetStartProcess() {
 		return ProcessingError{Operation: "Start Process"}
 	}
-	go func() {
-		for {
-			select {
-			case <-c.endWork:
-				return
-			default:
-				c.processWork(10000)
-			}
-		}
-	}()
+	c.processWork(10000)
 	c.setProcessing(true)
 
 	return nil
@@ -58,7 +48,6 @@ func (c *piController) StopProcess() error {
 	defer c.mutex.Unlock()
 	if c.processing {
 		c.processing = false
-		c.endWork <- true
 	}
 	return nil
 }
@@ -72,33 +61,31 @@ func (c *piController) MoveMotor() error {
 	if c.degreesForPhoto == 0 {
 		return ProcessingError{Operation: "MoveMotor 0 degrees"}
 	}
-	go func() {
-		for {
-			select {
-			case <-c.endWork:
-				return
-			default:
-				c.moveMotorWork(int(c.degreesForPhoto / c.motor.DegreesPerStep()))
-			}
-		}
-	}()
+	c.moveMotorWork(int(c.degreesForPhoto / c.motor.DegreesPerStep()))
 	return nil
 }
 func (c *piController) processWork(numSteps int) {
 	if glog.V(3) {
 		glog.Infoln("piController - processWork")
 	}
-	if numSteps > 100 {
-	}
+	
 	time.Sleep(time.Millisecond * 100)
 
 }
 func (c *piController) moveMotorWork(numSteps int) {
 	if glog.V(3) {
-		glog.Infoln("piController - moveMotorWork")
+		glog.Infoln("piController - moveMotorWork doing steps", numSteps)
 	}
-
-	//c.motor.DoSteps(numSteps)
+	
+	//RAMP here! and then, each time
+	for stepsDone:=0;stepsDone<numSteps;{
+		if c.isProcessing(){
+			c.motor.DoSteps(4)
+			stepsDone+=4
+		} else {
+			return
+		}
+	}
 	c.setProcessing(false)
 }
 
@@ -147,10 +134,10 @@ func (c *piController) setProcessing(value bool) {
 func NewController() piController {
 
 	r := raspi.NewAdaptor()
-	//r.Connect()
+	r.Connect()
 
 	motor := drivers.NewStepperMotorDriver(r, "40", "39")
-	//motor.Start()
+	motor.Start()
 
-	return piController{endWork: make(chan bool), motor: motor}
+	return piController{ motor: motor}
 }

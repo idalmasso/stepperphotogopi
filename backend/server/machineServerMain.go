@@ -53,6 +53,7 @@ func (s *MachineServer) Init(machine controllerMachine) {
 	s.Router.Route("/api", func(router chi.Router) {
 		router.Post("/move-motor", s.moveMotor)
 		router.Get("/machine-status", s.getMachineStatus)
+		router.Post("/stop-process", s.StopProcess)
 	})
 	s.initialized = true
 }

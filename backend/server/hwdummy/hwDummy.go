@@ -1,7 +1,6 @@
 package hwdummy
 
 import (
-	"fmt"
 	"sync"
 	"time"
 
@@ -11,7 +10,6 @@ import (
 type dummyController struct {
 	degreesForPhoto float64
 	processing      bool
-	endWork         chan bool
 	mutex           sync.RWMutex
 }
 
@@ -34,17 +32,7 @@ func (c *dummyController) StartProcess() error {
 	if !c.canSetStartProcess() {
 		return ProcessingError{Operation: "Start Process"}
 	}
-	go func() {
-		for {
-			select {
-			case <-c.endWork:
-				return
-			default:
-				c.processWork(10000)
-			}
-		}
-	}()
-	c.setProcessing(true)
+	c.processWork(10000)
 
 	return nil
 }
@@ -52,25 +40,20 @@ func (c *dummyController) StopProcess() error {
 	if glog.V(3) {
 		glog.Infoln("dummyController - StopProcess called")
 	}
-	c.mutex.Lock()
-	defer c.mutex.Unlock()
-	if c.processing {
-		c.processing = false
-		c.endWork <- true
-	}
+	c.setProcessing(false)
 	return nil
 }
 func (c *dummyController) MoveMotor() error {
 	if glog.V(3) {
-		glog.Infoln("dummyController - MoveMotor called")
+		glog.Infoln("piController - MoveMotor called")
 	}
-	if c.isProcessing() {
-		return fmt.Errorf("Cannot move MoveMotor while already processing")
+	if !c.canSetStartProcess() {
+		return ProcessingError{Operation: "MoveMotor"}
 	}
-
-	c.setProcessing(true)
+	if c.degreesForPhoto == 0 {
+		return ProcessingError{Operation: "MoveMotor 0 degrees"}
+	}
 	c.moveMotorWork(int(c.degreesForPhoto / 1.8))
-	c.setProcessing(false)
 	return nil
 }
 func (c *dummyController) processWork(numSteps int) {
@@ -82,10 +65,20 @@ func (c *dummyController) processWork(numSteps int) {
 
 }
 func (c *dummyController) moveMotorWork(numSteps int) {
-	if glog.V(3) {
-		glog.Infoln("dummyController - moveMotorWork for steps", numSteps)
+		if glog.V(3) {
+		glog.Infoln("piController - moveMotorWork doing steps", numSteps)
 	}
-	time.Sleep(time.Duration(numSteps) * time.Second)
+	
+	//RAMP here! and then, each time
+	for stepsDone:=0;stepsDone<numSteps;{
+		if c.isProcessing(){
+			time.Sleep(time.Duration(4)*time.Second)
+			stepsDone+=4
+		} else {
+			return
+		}
+	}
+	c.setProcessing(false)
 }
 
 // Return true if the machine is actually doing a work and so can be stopped but cannot start another one
@@ -130,5 +123,5 @@ func (c *dummyController) setProcessing(value bool) {
 	c.processing = value
 }
 func NewController() dummyController {
-	return dummyController{endWork: make(chan bool)}
+	return dummyController{}
 }
