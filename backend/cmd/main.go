@@ -10,8 +10,8 @@ import (
 	"flag"
 
 	"github.com/golang/glog"
-	"github.com/idalmasso/stepperphotogopi/backend/hwinterface"
 	"github.com/idalmasso/stepperphotogopi/backend/server"
+	"github.com/idalmasso/stepperphotogopi/backend/server/hwdummy"
 )
 
 func init() {
@@ -28,8 +28,8 @@ func main() {
 	if glog.V(3) {
 		glog.Infoln("backend start process")
 	}
-	controller := hwinterface.NewController()
-	//controller := hwdummy.NewController()
+	//controller := hwinterface.NewController()
+	controller := hwdummy.NewController()
 	server := server.MachineServer{}
 	server.Init(&controller)
 	server.ListenAndServe()

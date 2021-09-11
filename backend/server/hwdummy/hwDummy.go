@@ -1,6 +1,13 @@
 package hwdummy
 
 import (
+	"bytes"
+	"image"
+	"image/color"
+	"image/draw"
+	"image/jpeg"
+	"io"
+	"log"
 	"sync"
 	"time"
 
@@ -121,6 +128,21 @@ func (c *dummyController) setProcessing(value bool) {
 		}
 	}
 	c.processing = value
+}
+
+//Writes a snapshot into the writer passed
+func (c *dummyController) CameraSnapshot(w io.Writer) (err error) {
+	m := image.NewRGBA(image.Rect(0, 0, 240, 240))
+	blue := color.RGBA{0, 0, 255, 255}
+	draw.Draw(m, m.Bounds(), &image.Uniform{blue}, image.Point{1,1}, draw.Src)
+	buffer := new(bytes.Buffer)
+	if err := jpeg.Encode(buffer, m, nil); err != nil {
+		log.Println("unable to encode image.")
+	}
+	if _, err = w.Write(buffer.Bytes()); err != nil {
+			log.Println("unable to write image.")
+	}
+	return
 }
 func NewController() dummyController {
 	return dummyController{}

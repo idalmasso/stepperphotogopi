@@ -103,8 +103,8 @@ func (c *piController) isProcessing() bool {
 }
 
 func (c *piController) canSetStartProcess() bool {
-	if glog.V(3) {
-		glog.Infoln("piController - canStartProcess")
+	if glog.V(4) {
+		glog.Infoln("piController -  canSetStartProcess canStartProcess")
 	}
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
@@ -112,8 +112,8 @@ func (c *piController) canSetStartProcess() bool {
 		return false
 	} else {
 		c.processing = true
-		if glog.V(3) {
-			glog.Infoln("piController - start processing")
+		if glog.V(4) {
+			glog.Infoln("piController - canSetStartProcess start processing")
 		}
 		return true
 	}
@@ -122,18 +122,21 @@ func (c *piController) setProcessing(value bool) {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 	if c.processing && !value {
-		if glog.V(3) {
-			glog.Infoln("piController - stop processing")
+		if glog.V(4) {
+			glog.Infoln("piController - setProcessing stop processing")
 		}
 	} else if !c.processing && value {
-		if glog.V(3) {
-			glog.Infoln("piController - start processing")
+		if glog.V(4) {
+			glog.Infoln("piController - setProcessing start processing")
 		}
 	}
 	c.processing = value
 }
 //Writes a snapshot into the writer passed
 func (c *piController) CameraSnapshot(w io.Writer) (err error) {
+	if glog.V(3) {
+		glog.Infoln("piController - piController.CameraSnapshot - start")
+	}
 	return c.camera.DoPhoto(w)
 }
 func NewController() piController {

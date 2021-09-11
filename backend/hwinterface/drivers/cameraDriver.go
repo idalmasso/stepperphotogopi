@@ -64,13 +64,13 @@ func (l *CameraDriver) SecondsWait() int {
 // DoSteps does the actual number of requested steps in the set direction
 func (l *CameraDriver) DoPhoto(w io.Writer) (err error) {
 	errCh := make(chan error)
-		go func() {
-			for x := range errCh {
-				fmt.Fprintf(os.Stderr, "%v\n", x)
+	go func() {
+		for x := range errCh {
+			fmt.Fprintf(os.Stderr, "%v\n", x)
 		}
-		}()
-		log.Println("Capturing image...")
-		raspicam.Capture(l.still, w, errCh)
+	}()
+	log.Println("Capturing image...")
+	raspicam.Capture(l.still, w, errCh)
 	return
 }
 
