@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div :v-if="error">{{ error }}</div>
-    <form>
+    <div v-if="error">{{ error }}</div>
+    <form v-if="motorStatus != 'working'">
       <label for="degreerequest">Degrees</label>|
       <input id="degreerequest" type="text" v-model="degrees" />
       <button type="button" @click="submit">Submit</button>
