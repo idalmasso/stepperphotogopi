@@ -1,6 +1,7 @@
 package server
 
 import (
+	"io"
 	"net/http"
 	"os"
 	"time"
@@ -16,6 +17,7 @@ type controllerMachine interface {
 	StopProcess() error
 	MoveMotor() error
 	IsWorking() bool
+	CameraSnapshot(w io.Writer) error
 }
 
 //PiServer
@@ -53,7 +55,8 @@ func (s *MachineServer) Init(machine controllerMachine) {
 	s.Router.Route("/api", func(router chi.Router) {
 		router.Post("/move-motor", s.moveMotor)
 		router.Get("/machine-status", s.getMachineStatus)
-		router.Post("/stop-process", s.StopProcess)
+		router.Post("/stop-process", s.stopProcess)
+		router.Get("/get-snapshot", s.cameraSnapshot)
 	})
 	s.initialized = true
 }

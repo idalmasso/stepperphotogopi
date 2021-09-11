@@ -20,13 +20,8 @@ type StepperMotorDriver struct {
 	gobot.Commander
 }
 
-// NewLedDriver return a new LedDriver given a DigitalWriter and pin.
-//
-// Adds the following API Commands:
-//	"Brightness" - See LedDriver.Brightness
-//	"Toggle" - See LedDriver.Toggle
-//	"On" - See LedDriver.On
-//	"Off" - See LedDriver.Off
+// NewStepperMotorDriver return a new StepperMotorDriver given a DigitalWriter and pin and a directionpin.
+
 func NewStepperMotorDriver(a gpio.DigitalWriter, pin, directionPin string) *StepperMotorDriver {
 	l := &StepperMotorDriver{
 		name:           gobot.DefaultName("STEPPERMOTOR"),

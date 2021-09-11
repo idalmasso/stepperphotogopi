@@ -6,11 +6,11 @@ import (
 )
 
 
-func (s *MachineServer)stopProcess(w http.ResponseWriter, r *http.Request){
-	if err:=s.machine.StopProcess(); err!=nil{
+func (s *MachineServer)cameraSnapshot(w http.ResponseWriter, r *http.Request){
+	if err:=s.machine.CameraSnapshot(w); err!=nil{
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(errorMessage{Message: err.Error()})
 	}
-	json.NewEncoder(w).Encode(valueResponse{Value: "ok"})
+	
 	w.WriteHeader(http.StatusOK)
 }

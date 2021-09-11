@@ -1,6 +1,7 @@
 package hwinterface
 
 import (
+	"io"
 	"sync"
 	"time"
 
@@ -13,6 +14,7 @@ type piController struct {
 	degreesForPhoto float64
 	processing      bool
 	motor           *drivers.StepperMotorDriver
+	camera					*drivers.CameraDriver
 	mutex           sync.RWMutex
 }
 
@@ -130,7 +132,10 @@ func (c *piController) setProcessing(value bool) {
 	}
 	c.processing = value
 }
-
+//Writes a snapshot into the writer passed
+func (c *piController) CameraSnapshot(w io.Writer) (err error) {
+	return c.camera.DoPhoto(w)
+}
 func NewController() piController {
 
 	r := raspi.NewAdaptor()
@@ -138,6 +143,7 @@ func NewController() piController {
 
 	motor := drivers.NewStepperMotorDriver(r, "40", "39")
 	motor.Start()
-
-	return piController{ motor: motor}
+	camera := drivers.NewCameraDriver()
+	return piController{ motor: motor, camera: camera}
 }
+
