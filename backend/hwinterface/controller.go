@@ -147,6 +147,7 @@ func NewController() piController {
 	motor := drivers.NewStepperMotorDriver(r, "40", "39")
 	motor.Start()
 	camera := drivers.NewCameraDriver()
+	camera.Start()
 	return piController{ motor: motor, camera: camera}
 }
 
