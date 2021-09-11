@@ -30,7 +30,7 @@ export default {
     },
   },
   mounted() {
-    setInterval(this.fetchImage, 2000)
+    setInterval(this.fetchImage, 3000)
   },
 }
 </script>
