@@ -1,6 +1,7 @@
 package hwinterface
 
 import (
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -44,6 +45,12 @@ func (c *piController) StartProcess() error {
 	}
 	go func(){
 		defer c.setProcessing(false)
+			if c.degreesForPhoto == 0 {
+				if glog.V(1) {
+					glog.Errorln("piController - Set to 0 degrees")
+				}
+				return 
+			}
 		c.gearTransmissionDriver.ResetActualAngle()
 		newpath := filepath.Join("../../frontend/dist", "public")
 		if err := os.MkdirAll(newpath, os.ModePerm); err!=nil{
@@ -53,8 +60,8 @@ func (c *piController) StartProcess() error {
 			return
 		}
 		t := time.Now()
-		t.Year()
-		newpath = filepath.Join(newpath, t.Format("yyyyMMddhhmm"))
+		
+		newpath = filepath.Join(newpath, fmt.Sprintf("%04d%02d%02d%02d%02d%02d", t.Year(), int(t.Month()), t.Day(),t.Hour(),t.Minute(), t.Second()))
 		if err := os.MkdirAll(newpath, os.ModePerm); err!=nil{
 			if glog.V(1) {
 				glog.Errorln("piController - StartProcess error on create folder",newpath, err.Error())
@@ -75,7 +82,7 @@ func (c *piController) StartProcess() error {
 				}
 				return
 			}
-			file, err:=os.Create(newpath+"-"+strconv.FormatInt(int64(numPhoto), 10)+".jpg")
+			file, err:=os.Create(filepath.Join(newpath,strconv.FormatInt(int64(numPhoto), 10)+".jpg"))
 			if err!=nil{
 				if glog.V(1) {
 					glog.Errorln("piController - Gotoangle error on create photo file", newpath+"-"+strconv.FormatInt(int64(numPhoto), 10)+".jpg", err.Error())

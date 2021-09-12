@@ -39,9 +39,9 @@ func (d *TransmissionFromStepperMotorDriver)GoToAngle(angle float64) (err error)
 	toDoSteps:=(toDoAngle/d.transmissionRatio)/d.motorDriver.DegreesPerStep()
 	steps, err:=d.motorDriver.DoSteps(int(toDoSteps))
 	if d.motorDriver.forward{
-		angle += float64(steps)*d.transmissionRatio*d.motorDriver.DegreesPerStep()
+		d.actualAngle += float64(steps)*d.transmissionRatio*d.motorDriver.DegreesPerStep()
 	}	else {
-		angle -=float64(steps)*d.transmissionRatio*d.motorDriver.DegreesPerStep()
+		d.actualAngle -=float64(steps)*d.transmissionRatio*d.motorDriver.DegreesPerStep()
 	}
 	return 
 }
