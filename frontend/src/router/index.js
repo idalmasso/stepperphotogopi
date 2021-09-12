@@ -1,18 +1,19 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../views/Home.vue'
+import MotorView from '../views/MotorView.vue'
 
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: Home,
+    name: 'MotorView',
+    component: MotorView,
   },
 
-  // {
-  //  path: '/about',
-  //  name: 'About',
-  //  component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
-  // }
+  {
+    path: '/process',
+    name: 'Process',
+    component: () =>
+      import(/* webpackChunkName: "about" */ '../views/Process.vue'),
+  },
 ]
 
 const router = createRouter({

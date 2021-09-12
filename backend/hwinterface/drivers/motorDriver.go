@@ -30,14 +30,15 @@ func NewStepperMotorDriver(a gpio.DigitalWriter, pin, directionPin string) *Step
 		connection:     a,
 		steps:          0,
 		forward:        true,
-		millisWait:     20,
+		millisWait:     5,
 		degreesPerStep: 1.8,
 		Commander:      gobot.NewCommander(),
 	}
 
 	l.AddCommand("DoSteps", func(params map[string]interface{}) interface{} {
 		numSteps := params["numSteps"].(int)
-		return l.DoSteps(numSteps)
+		_, err:=l.DoSteps(numSteps)
+		return err
 	})
 
 	/*
@@ -88,13 +89,14 @@ func (l *StepperMotorDriver) NumSteps() int {
 func (l *StepperMotorDriver) DegreesPerStep() float64 {
 	return l.degreesPerStep
 }
-
 // DoSteps does the actual number of requested steps in the set direction
-func (l *StepperMotorDriver) DoSteps(numSteps int) (err error) {
+func (l *StepperMotorDriver) DoSteps(numSteps int) (stepsDone int,err error) {
+	stepsDone=0
 	for l.steps = 0; l.steps < numSteps; l.steps++ {
 		if err = l.doSingleStep(); err != nil {
 			return
 		}
+		stepsDone++
 	}
 	return
 }

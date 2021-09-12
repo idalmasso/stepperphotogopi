@@ -2,6 +2,9 @@ package hwinterface
 
 import (
 	"io"
+	"os"
+	"path/filepath"
+	"strconv"
 	"sync"
 	"time"
 
@@ -14,6 +17,7 @@ type piController struct {
 	degreesForPhoto float64
 	processing      bool
 	motor           *drivers.StepperMotorDriver
+	gearTransmissionDriver *drivers.TransmissionFromStepperMotorDriver
 	camera					*drivers.CameraDriver
 	mutex           sync.RWMutex
 }
@@ -30,6 +34,7 @@ func (c *piController) SetDegreesMovement(degrees float64) error {
 	c.degreesForPhoto = degrees
 	return nil
 }
+//StartProcess actually starts the real process of making photo 360
 func (c *piController) StartProcess() error {
 	if glog.V(3) {
 		glog.Infoln("piController - StartProcess called")
@@ -37,11 +42,58 @@ func (c *piController) StartProcess() error {
 	if !c.canSetStartProcess() {
 		return ProcessingError{Operation: "Start Process"}
 	}
-	c.processWork(10000)
-	c.setProcessing(true)
+	go func(){
+		defer c.setProcessing(false)
+		c.gearTransmissionDriver.ResetActualAngle()
+		newpath := filepath.Join("../../frontend/dist", "public")
+		if err := os.MkdirAll(newpath, os.ModePerm); err!=nil{
+			if glog.V(1) {
+				glog.Errorln("piController - StartProcess error on create public folder", err.Error())
+			}
+			return
+		}
+		t := time.Now()
+		t.Year()
+		newpath = filepath.Join(newpath, t.Format("yyyyMMddhhmm"))
+		if err := os.MkdirAll(newpath, os.ModePerm); err!=nil{
+			if glog.V(1) {
+				glog.Errorln("piController - StartProcess error on create folder",newpath, err.Error())
+			}
+			return
+		}
+		
+		for actualAngle, numPhoto:=0.0,0;actualAngle<360;actualAngle,numPhoto=actualAngle+c.degreesForPhoto, numPhoto+1{
+			if !c.isProcessing() {
+				if glog.V(2) {
+					glog.Warningln("piController - StartProcess interrupted")
+				}
+				return
+			}
+			if err:=c.gearTransmissionDriver.GoToAngle(actualAngle); err!=nil{
+				if glog.V(1) {
+					glog.Errorln("piController - Gotoangle error on create public folder", err.Error())
+				}
+				return
+			}
+			file, err:=os.Create(newpath+"-"+strconv.FormatInt(int64(numPhoto), 10)+".jpg")
+			if err!=nil{
+				if glog.V(1) {
+					glog.Errorln("piController - Gotoangle error on create photo file", newpath+"-"+strconv.FormatInt(int64(numPhoto), 10)+".jpg", err.Error())
+				}
+				return
+			}
+			if err:=c.CameraSnapshot(file); err!=nil{
+				if glog.V(1) {
+					glog.Errorln("piController - CameraSnapshot error", err.Error())
+				}
+				return
+			}
+		}
+	}()
 
 	return nil
 }
+//StopProcess should stop the process at any time
 func (c *piController) StopProcess() error {
 	if glog.V(3) {
 		glog.Infoln("piController - StopProcess called")
@@ -66,14 +118,7 @@ func (c *piController) MoveMotor() error {
 	c.moveMotorWork(int(c.degreesForPhoto / c.motor.DegreesPerStep()))
 	return nil
 }
-func (c *piController) processWork(numSteps int) {
-	if glog.V(3) {
-		glog.Infoln("piController - processWork")
-	}
-	
-	time.Sleep(time.Millisecond * 100)
 
-}
 func (c *piController) moveMotorWork(numSteps int) {
 	if glog.V(3) {
 		glog.Infoln("piController - moveMotorWork doing steps", numSteps)
@@ -148,6 +193,9 @@ func NewController() piController {
 	motor.Start()
 	camera := drivers.NewCameraDriver()
 	camera.Start()
-	return piController{ motor: motor, camera: camera}
+	//TODO: Update the ratio here!
+	gearTransmissionDriver:=drivers.NewTransmissionStepperMotorDriver(motor, 1)
+	gearTransmissionDriver.Start()
+	return piController{ motor: motor, camera: camera, gearTransmissionDriver: gearTransmissionDriver}
 }
 

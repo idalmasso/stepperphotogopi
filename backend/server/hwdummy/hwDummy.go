@@ -39,20 +39,26 @@ func (c *dummyController) StartProcess() error {
 	if !c.canSetStartProcess() {
 		return ProcessingError{Operation: "Start Process"}
 	}
-	c.processWork(10000)
+	
+	go c.processWork(10)
 
 	return nil
 }
+//StopProcess should stop the process at any time
 func (c *dummyController) StopProcess() error {
 	if glog.V(3) {
 		glog.Infoln("dummyController - StopProcess called")
 	}
-	c.setProcessing(false)
+	c.mutex.Lock()
+	defer c.mutex.Unlock()
+	if c.processing {
+		c.processing = false
+	}
 	return nil
 }
 func (c *dummyController) MoveMotor() error {
 	if glog.V(3) {
-		glog.Infoln("piController - MoveMotor called")
+		glog.Infoln("dummyController - MoveMotor called")
 	}
 	if !c.canSetStartProcess() {
 		return ProcessingError{Operation: "MoveMotor"}
@@ -64,16 +70,24 @@ func (c *dummyController) MoveMotor() error {
 	return nil
 }
 func (c *dummyController) processWork(numSteps int) {
-
+	defer c.setProcessing(false)
 	if glog.V(3) {
 		glog.Infoln("dummyController - processWork")
 	}
-	c.moveMotorWork(numSteps)
+	for i:=0;i<numSteps;i++{
+		if !c.isProcessing(){
+			if glog.V(3) {
+				glog.Infoln("dummyController - interrupt")
+			}
+			
+		}
+		time.Sleep(time.Second)
+	}
 
 }
 func (c *dummyController) moveMotorWork(numSteps int) {
 		if glog.V(3) {
-		glog.Infoln("piController - moveMotorWork doing steps", numSteps)
+		glog.Infoln("dummyController - moveMotorWork doing steps", numSteps)
 	}
 	
 	//RAMP here! and then, each time

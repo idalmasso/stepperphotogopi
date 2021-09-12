@@ -11,7 +11,7 @@ import MotorControl from '@/components/MotorControl.vue'
 import CameraView from '@/components/CameraView.vue'
 
 export default {
-  name: 'Home',
+  name: 'MotorView',
   components: {
     MotorControl,
     CameraView,

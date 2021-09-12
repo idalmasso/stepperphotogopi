@@ -56,6 +56,7 @@ func (s *MachineServer) Init(machine controllerMachine) {
 		router.Post("/move-motor", s.moveMotor)
 		router.Get("/machine-status", s.getMachineStatus)
 		router.Post("/stop-process", s.stopProcess)
+		router.Post("/start-process", s.startProcess)
 		router.Get("/get-snapshot", s.cameraSnapshot)
 	})
 	s.initialized = true

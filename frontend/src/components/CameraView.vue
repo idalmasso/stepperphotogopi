@@ -1,5 +1,6 @@
 <template>
   <img class="camera-image" v-if="imageObjectURL != ''" :src="imageObjectURL" />
+  <button @click="swapInterval">{{ swapIntervalText }}</button>
 </template>
 
 <script>
@@ -7,6 +8,7 @@ export default {
   data() {
     return {
       imageObjectURL: '',
+      interval: null,
     }
   },
   methods: {
@@ -23,14 +25,25 @@ export default {
           console.log(e)
         })
     },
+    swapInterval() {
+      if (this.interval == null) {
+        this.interval = setInterval(this.fetchImage, 3000)
+      } else {
+        clearInterval(this.interval)
+        this.interval = null
+      }
+    },
   },
   computed: {
     imageUrl() {
       return '/api/get-snapshot'
     },
-  },
-  mounted() {
-    setInterval(this.fetchImage, 3000)
+    swapIntervalText() {
+      if (this.interval == null) {
+        return 'Raccogli immagini'
+      }
+      return 'stop'
+    },
   },
 }
 </script>
