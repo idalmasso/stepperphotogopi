@@ -21,6 +21,7 @@ export default {
       degrees: 0,
       error: '',
       motorStatus: '',
+      statusRequest: null,
     }
   },
   methods: {
@@ -77,7 +78,10 @@ export default {
     },
   },
   mounted() {
-    setInterval(this.requestStatus, 1000)
+    this.statusRequest = setInterval(this.requestStatus, 1000)
+  },
+  beforeUnmount() {
+    clearInterval(this.statusRequest)
   },
 }
 </script>

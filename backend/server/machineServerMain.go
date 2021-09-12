@@ -18,6 +18,7 @@ type controllerMachine interface {
 	MoveMotor() error
 	IsWorking() bool
 	CameraSnapshot(w io.Writer) error
+	GetActualProcessName() string
 }
 
 //PiServer
@@ -25,6 +26,7 @@ type MachineServer struct {
 	initialized bool
 	Router      chi.Router
 	machine     controllerMachine
+	
 }
 
 //ListenAndServe is the main server procedure that only wraps http.ListenAndServe
@@ -52,12 +54,21 @@ func (s *MachineServer) Init(machine controllerMachine) {
 	s.Router.Use(middleware.Timeout(60 * time.Second))
 
 	FileServer(s.Router.(*chi.Mux))
+	FileServerImages(s.Router.(*chi.Mux))
 	s.Router.Route("/api", func(router chi.Router) {
-		router.Post("/move-motor", s.moveMotor)
+		router.Route("/processes", func(processRouter chi.Router){
+			processRouter.Get("/", s.getListProcessDone)
+			processRouter.Post("/", s.startProcess)
+			processRouter.Delete("/<process>", s.deleteProcessDone)
+		})
+		router.Get("/get-snapshot", s.cameraSnapshot)
 		router.Get("/machine-status", s.getMachineStatus)
+		
+		router.Post("/move-motor", s.moveMotor)
 		router.Post("/stop-process", s.stopProcess)
 		router.Post("/start-process", s.startProcess)
-		router.Get("/get-snapshot", s.cameraSnapshot)
+		
+		
 	})
 	s.initialized = true
 }
@@ -77,3 +88,21 @@ func FileServer(router *chi.Mux) {
 		}
 	})
 }
+
+// FileServer conveniently sets up a http.FileServer handler to serve
+// static files from a http.FileSystem.
+// FileServer is serving static files.
+func FileServerImages(router *chi.Mux) {
+	root := "../../images"
+	if err := os.MkdirAll(root, os.ModePerm); err!=nil{
+		if glog.V(1) {
+			glog.Errorln("FileServerImages - Cnnot create public folder", err.Error())
+		}
+		return
+	}
+	//fs := http.FileServer(http.Dir(root))
+	fileServer := http.FileServer(http.Dir(root))
+	router.Handle("/process-images/*", http.StripPrefix("/process-images", fileServer))
+	
+}
+

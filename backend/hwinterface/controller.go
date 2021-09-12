@@ -21,6 +21,7 @@ type piController struct {
 	gearTransmissionDriver *drivers.TransmissionFromStepperMotorDriver
 	camera					*drivers.CameraDriver
 	mutex           sync.RWMutex
+	actualProcessName string
 }
 
 func (c *piController) SetDegreesMovement(degrees float64) error {
@@ -52,7 +53,7 @@ func (c *piController) StartProcess() error {
 				return 
 			}
 		c.gearTransmissionDriver.ResetActualAngle()
-		newpath := filepath.Join("../../frontend/dist", "public")
+		newpath := "../../images"
 		if err := os.MkdirAll(newpath, os.ModePerm); err!=nil{
 			if glog.V(1) {
 				glog.Errorln("piController - StartProcess error on create public folder", err.Error())
@@ -60,8 +61,8 @@ func (c *piController) StartProcess() error {
 			return
 		}
 		t := time.Now()
-		
-		newpath = filepath.Join(newpath, fmt.Sprintf("%04d%02d%02d%02d%02d%02d", t.Year(), int(t.Month()), t.Day(),t.Hour(),t.Minute(), t.Second()))
+		c.actualProcessName=fmt.Sprintf("%04d%02d%02d%02d%02d%02d", t.Year(), int(t.Month()), t.Day(),t.Hour(),t.Minute(), t.Second())
+		newpath = filepath.Join(newpath, c.actualProcessName)
 		if err := os.MkdirAll(newpath, os.ModePerm); err!=nil{
 			if glog.V(1) {
 				glog.Errorln("piController - StartProcess error on create folder",newpath, err.Error())
@@ -109,6 +110,7 @@ func (c *piController) StopProcess() error {
 	defer c.mutex.Unlock()
 	if c.processing {
 		c.processing = false
+		c.actualProcessName=""
 	}
 	return nil
 }
@@ -170,6 +172,7 @@ func (c *piController) canSetStartProcess() bool {
 		return true
 	}
 }
+func (c*piController) GetActualProcessName() string {return c.actualProcessName}
 func (c *piController) setProcessing(value bool) {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
@@ -177,6 +180,7 @@ func (c *piController) setProcessing(value bool) {
 		if glog.V(4) {
 			glog.Infoln("piController - setProcessing stop processing")
 		}
+		c.actualProcessName=""
 	} else if !c.processing && value {
 		if glog.V(4) {
 			glog.Infoln("piController - setProcessing start processing")
@@ -201,6 +205,7 @@ func NewController() piController {
 	camera := drivers.NewCameraDriver()
 	camera.Start()
 	//TODO: Update the ratio here!
+	
 	gearTransmissionDriver:=drivers.NewTransmissionStepperMotorDriver(motor, 1)
 	gearTransmissionDriver.Start()
 	return piController{ motor: motor, camera: camera, gearTransmissionDriver: gearTransmissionDriver}

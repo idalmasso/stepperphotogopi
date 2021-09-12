@@ -14,6 +14,12 @@ const routes = [
     component: () =>
       import(/* webpackChunkName: "about" */ '../views/Process.vue'),
   },
+  {
+    path: '/processes',
+    name: 'EndedProcesses',
+    component: () =>
+      import(/* webpackChunkName: "about" */ '../views/EndedProcesses.vue'),
+  },
 ]
 
 const router = createRouter({

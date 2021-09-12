@@ -6,3 +6,7 @@ type errorMessage struct {
 type valueResponse struct {
 	Value string `json:"value"`
 }
+
+type valueListStringResponse struct {
+	Value []string `json:"value"`
+}

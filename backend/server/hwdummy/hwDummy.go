@@ -2,12 +2,17 @@ package hwdummy
 
 import (
 	"bytes"
+	"fmt"
 	"image"
 	"image/color"
 	"image/draw"
 	"image/jpeg"
 	"io"
 	"log"
+	"math/rand"
+	"os"
+	"path/filepath"
+	"strconv"
 	"sync"
 	"time"
 
@@ -18,6 +23,7 @@ type dummyController struct {
 	degreesForPhoto float64
 	processing      bool
 	mutex           sync.RWMutex
+	actualProcessName string
 }
 
 func (c *dummyController) SetDegreesMovement(degrees float64) error {
@@ -32,18 +38,7 @@ func (c *dummyController) SetDegreesMovement(degrees float64) error {
 	c.degreesForPhoto = degrees
 	return nil
 }
-func (c *dummyController) StartProcess() error {
-	if glog.V(3) {
-		glog.Infoln("dummyController - StartProcess called")
-	}
-	if !c.canSetStartProcess() {
-		return ProcessingError{Operation: "Start Process"}
-	}
-	
-	go c.processWork(10)
 
-	return nil
-}
 //StopProcess should stop the process at any time
 func (c *dummyController) StopProcess() error {
 	if glog.V(3) {
@@ -53,6 +48,7 @@ func (c *dummyController) StopProcess() error {
 	defer c.mutex.Unlock()
 	if c.processing {
 		c.processing = false
+		c.actualProcessName=""
 	}
 	return nil
 }
@@ -69,22 +65,67 @@ func (c *dummyController) MoveMotor() error {
 	c.moveMotorWork(int(c.degreesForPhoto / 1.8))
 	return nil
 }
-func (c *dummyController) processWork(numSteps int) {
-	defer c.setProcessing(false)
+//StartProcess actually starts the real process of making photo 360
+func (c *dummyController) StartProcess() error {
 	if glog.V(3) {
-		glog.Infoln("dummyController - processWork")
+		glog.Infoln("dummyController - StartProcess called")
 	}
-	for i:=0;i<numSteps;i++{
-		if !c.isProcessing(){
-			if glog.V(3) {
-				glog.Infoln("dummyController - interrupt")
+	if !c.canSetStartProcess() {
+		return ProcessingError{Operation: "Start Process"}
+	}
+	go func(){
+		defer c.setProcessing(false)
+			if c.degreesForPhoto == 0 {
+				if glog.V(1) {
+					glog.Errorln("piController - Set to 0 degrees")
+				}
+				return 
 			}
-			
+		
+		newpath := "../../images"
+		if err := os.MkdirAll(newpath, os.ModePerm); err!=nil{
+			if glog.V(1) {
+				glog.Errorln("piController - StartProcess error on create public folder", err.Error())
+			}
+			return
 		}
-		time.Sleep(time.Second)
-	}
+		t := time.Now()
+		c.actualProcessName=fmt.Sprintf("%04d%02d%02d%02d%02d%02d", t.Year(), int(t.Month()), t.Day(),t.Hour(),t.Minute(), t.Second())
+		newpath = filepath.Join(newpath, c.actualProcessName)
+		if err := os.MkdirAll(newpath, os.ModePerm); err!=nil{
+			if glog.V(1) {
+				glog.Errorln("piController - StartProcess error on create folder",newpath, err.Error())
+			}
+			return
+		}
+		
+		for actualAngle, numPhoto:=0.0,0;actualAngle<360;actualAngle,numPhoto=actualAngle+c.degreesForPhoto, numPhoto+1{
+			if !c.isProcessing() {
+				if glog.V(2) {
+					glog.Warningln("piController - StartProcess interrupted")
+				}
+				return
+			}
+			time.Sleep(500*time.Millisecond)
+			file, err:=os.Create(filepath.Join(newpath,strconv.FormatInt(int64(numPhoto), 10)+".jpg"))
+			if err!=nil{
+				if glog.V(1) {
+					glog.Errorln("piController - Gotoangle error on create photo file", newpath+"-"+strconv.FormatInt(int64(numPhoto), 10)+".jpg", err.Error())
+				}
+				return
+			}
+			if err:=c.CameraSnapshot(file); err!=nil{
+				if glog.V(1) {
+					glog.Errorln("piController - CameraSnapshot error", err.Error())
+				}
+				return
+			}
+		}
+	}()
 
+	return nil
 }
+
 func (c *dummyController) moveMotorWork(numSteps int) {
 		if glog.V(3) {
 		glog.Infoln("dummyController - moveMotorWork doing steps", numSteps)
@@ -136,6 +177,7 @@ func (c *dummyController) setProcessing(value bool) {
 		if glog.V(3) {
 			glog.Infoln("dummyController - stop processing")
 		}
+		c.actualProcessName=""
 	} else if !c.processing && value {
 		if glog.V(3) {
 			glog.Infoln("dummyController - start processing")
@@ -143,11 +185,11 @@ func (c *dummyController) setProcessing(value bool) {
 	}
 	c.processing = value
 }
-
+func (c*dummyController) GetActualProcessName() string {return c.actualProcessName}
 //Writes a snapshot into the writer passed
 func (c *dummyController) CameraSnapshot(w io.Writer) (err error) {
 	m := image.NewRGBA(image.Rect(0, 0, 240, 240))
-	blue := color.RGBA{0, 0, 255, 255}
+	blue := color.RGBA{uint8(rand.Intn(255)), uint8(rand.Intn(255)), uint8(rand.Intn(255)), 255}
 	draw.Draw(m, m.Bounds(), &image.Uniform{blue}, image.Point{1,1}, draw.Src)
 	buffer := new(bytes.Buffer)
 	if err := jpeg.Encode(buffer, m, nil); err != nil {

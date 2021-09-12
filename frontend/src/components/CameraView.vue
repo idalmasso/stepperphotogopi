@@ -45,6 +45,11 @@ export default {
       return 'stop'
     },
   },
+  beforeUnmount() {
+    if (this.interval != null) {
+      clearInterval(this.interval)
+    }
+  },
 }
 </script>
 
