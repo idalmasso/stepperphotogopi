@@ -22,9 +22,6 @@ export default {
       return "/process-images/"+this.processName+"/";
     }
   },
-  mounted() {
-
-  }
 }
 </script>
 

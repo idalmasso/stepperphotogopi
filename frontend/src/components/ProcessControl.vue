@@ -77,11 +77,13 @@ export default {
   },
   mounted() {
     this.statusRequest = setInterval(this.requestStatus, 1000)
+    this.$emit('setInterval', this.statusRequest);
   },
-  beforeUnmount() {
+  unmounted(){
     console.log("ProcessControl Clearing statusRequest")
     clearInterval(this.statusRequest)
-  },
+  }
+  
 }
 </script>
 

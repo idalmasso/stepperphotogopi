@@ -27,12 +27,14 @@ export default {
             console.log(this.imageObjectURL)
             if(this.collect){
               this.idCollect=setTimeout(this.fetchImage, 2000);
+              this.$emit('setTimeout', this.idCollect);
             }
           })
           .catch((e) => {
             console.log(e)
             if(this.collect){
               this.idCollect=setTimeout(this.fetchImage, 2000);
+              this.$emit('setTimeout', this.idCollect);
             }
           })
       }
@@ -43,6 +45,7 @@ export default {
         this.fetchImage();
       } else {
         this.collect=false;
+        this.$emit('setTimeout', '');
       }
     },
   },
@@ -57,11 +60,10 @@ export default {
       return 'stop'
     },
   },
-  beforeUnmount() {
-    console.log("CameraView Clearing statusRequest")
-    this.collect=false;
-    clearTimeout(this.idCollect);
-  },
+  unmounted(){
+    console.log("ProcessControl Clearing statusRequest")
+    clearTimeout(this.idCollect)
+  }
 }
 </script>
 
