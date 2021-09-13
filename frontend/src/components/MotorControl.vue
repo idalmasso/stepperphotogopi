@@ -1,13 +1,14 @@
 <template>
-  <div>
-    <div v-if="error">{{ error }}</div>
+  <div class="motor-control">
+    <h2>Motor test</h2>
+    <div class="error-text" v-if="error">{{ error }}</div>
     <form v-if="motorStatus != 'working'">
-      <label for="degreerequest">Degrees</label>|
+      <label for="degreerequest">Degrees</label>
       <input id="degreerequest" type="text" v-model="degrees" />
-      <button type="button" @click="submit">Submit</button>
+      <button type="button" @click="submit">INIZIA</button>
     </form>
     <button v-if="motorStatus == 'working'" @click="stopMotor">
-      Stop motor
+      STOP
     </button>
     <h4>Motor status: {{ motorStatus }}</h4>
   </div>
@@ -87,4 +88,20 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped></style>
+<style scoped>
+.motor-control{
+  border-style: solid;
+  border-width: 1pt;
+}
+.error-text{
+  color:red;
+}
+input{
+  height: 25px;
+  margin: 0 auto;
+  border: auto;
+  border-radius: 10px;
+  text-align: right;
+  margin: 2pt;
+}
+</style>

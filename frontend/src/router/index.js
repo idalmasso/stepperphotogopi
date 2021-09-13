@@ -1,30 +1,41 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import MotorView from '../views/MotorView.vue'
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+import EndedProcesses from '../views/EndedProcesses.vue'
+
+Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    name: 'MotorView',
-    component: MotorView,
+    name: 'EndedProcesses',
+    component: EndedProcesses,
   },
 
   {
     path: '/process',
     name: 'Process',
     component: () =>
-      import(/* webpackChunkName: "about" */ '../views/Process.vue'),
+      import(/* webpackChunkName: "Process" */ '../views/Process.vue'),
   },
   {
-    path: '/processes',
-    name: 'EndedProcesses',
+    path: '/test-page',
+    name: 'TestPage',
     component: () =>
-      import(/* webpackChunkName: "about" */ '../views/EndedProcesses.vue'),
+      import(/* webpackChunkName: "test-page" */ '../views/TestPage.vue'),
+  },
+  {
+    path: '/process-viewer/:processName',
+    name: 'EndedProcessViewer',
+    component: () =>
+      import(/* webpackChunkName: "process-viewer" */ '../views/EndedProcessViewer.vue'),
+    props:true
   },
 ]
 
-const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
-  routes,
+const router = new VueRouter({
+  mode: 'history',
+  base: process.env.BASE_URL,
+  routes
 })
 
 export default router

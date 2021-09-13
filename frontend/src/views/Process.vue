@@ -1,5 +1,6 @@
 <template>
   <div class="process">
+    <h1>Start Process</h1>
     <ProcessControl />
   </div>
 </template>

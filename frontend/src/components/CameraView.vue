@@ -1,6 +1,9 @@
 <template>
+<div class="camera-view">
+  <h2>Camera test</h2>
   <img class="camera-image" v-if="imageObjectURL != ''" :src="imageObjectURL" />
   <button @click="swapInterval">{{ swapIntervalText }}</button>
+  </div>
 </template>
 
 <script>
@@ -56,5 +59,10 @@ export default {
 <style>
 .camera-image {
   max-width: 50%;
+}
+.camera-view {
+  border-style: none solid solid solid;
+  border-width: 1pt;
+  padding-bottom: 10pt;
 }
 </style>

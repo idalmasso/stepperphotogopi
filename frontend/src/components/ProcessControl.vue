@@ -1,7 +1,7 @@
 <template>
-  <div>
-    <h1>Photo processing</h1>
-    <div v-if="error">{{ error }}</div>
+  <div class=process-control>
+    <h2>Full process starter</h2>
+    <div class="error-text" v-if="error">{{ error }}</div>
     <form v-if="motorStatus != 'working'">
       <button type="button" @click="submit">START</button>
     </form>
@@ -85,4 +85,9 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped></style>
+<style scoped>
+
+.error-text{
+  color:red;
+}
+</style>

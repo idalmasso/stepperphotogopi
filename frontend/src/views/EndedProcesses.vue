@@ -2,7 +2,7 @@
   <div>
     <h1>Processes</h1>
     <li v-for="process in processes" :key="process">
-      <a :href="processImagesUrl(process)">{{ process }}</a>
+      <router-link :to="{name:'EndedProcessViewer' , params:{processName: process}}"  > {{ process }}</router-link>
     </li>
   </div>
 </template>
@@ -14,11 +14,6 @@ export default {
     return {
       processes: [],
     }
-  },
-  methods: {
-    processImagesUrl(process) {
-      return '/process-images/' + process
-    },
   },
   mounted() {
     fetch('/api/processes')

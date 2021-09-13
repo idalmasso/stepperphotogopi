@@ -1,10 +1,74 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Motor Control</router-link>
-    <router-link to="/process">Process control</router-link>
-    <router-link to="/processes">Ended processes</router-link>
+  <div class="app">
+    <nav class="nav">
+      <ul class="menu">
+        <li class="item">
+      <router-link class="nav-link" to="/">Ended processes</router-link></li>
+      <li class="item">
+      <router-link class="nav-link" to="/process">Process control</router-link></li>
+      <li class="item">
+      <router-link class="nav-link" to="/test-page">Test page</router-link></li>
+      </ul>
+    </nav>
+    <router-view class="content"/>
   </div>
-  <router-view />
 </template>
 
-<style></style>
+<style>
+.app{
+  margin: 0;
+  font: small-caps bold 14px/1 sans-serif;
+}
+.nav{
+background: #222;
+  padding: 0 15px;
+  
+}
+.nav-link{
+  color: white;
+  text-decoration: none;
+  
+}
+.menu{   
+    list-style-type: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    order: 1;
+    align-items: flex-start;     
+    flex-wrap: nowrap;
+    background: none;
+    
+}
+.menu li a {
+    display: block;
+    padding: 15px 5px;
+}
+.item {
+    padding: 10px;
+    position: relative;
+    display: block; 
+    width: auto;
+    order: 1;
+}
+.item.button {
+    padding: 9px 5px;
+}
+.item:not(.button) a:hover,
+.item a:hover::after {
+    color: #ccc;
+}
+.content{
+  margin: 0 10% 0 10% ; 
+  
+}
+.content button{
+  border-radius: 10%;
+  padding: 10pt;
+  background-color: gray;
+  color: white;
+  box-shadow: 5px 10px;
+  margin: 5pt;
+}
+</style>
