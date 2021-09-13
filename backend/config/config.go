@@ -8,12 +8,12 @@ import (
 
 type Config struct {
 	Hardware struct {
-		MotorDegreePerStep float64 `yaml:"motorDegreePerStep"`
-		WaitForStep        int     `yaml:"waitForStep"`
-		GearRatio          float64 `yaml:"gearRatio"`
-	} `yaml:"hardware"`
-	PhotoDirectory        string `yaml:"photoDirectory"`
-	DistributionDirectory string `yaml:"distributionDirectory"`
+		MotorDegreePerStep float64 `json:"motorDegreePerStep"`
+		WaitForStep        int     `json:"waitForStep"`
+		GearRatio          float64 `json:"gearRatio"`
+	} `json:"hardware"`
+	PhotoDirectory        string `json:"photoDirectory"`
+	DistributionDirectory string `json:"distributionDirectory"`
 }
 
 func (c *Config) ReadFromFile(filename string) (err error) {

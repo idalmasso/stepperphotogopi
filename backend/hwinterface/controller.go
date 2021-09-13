@@ -71,7 +71,7 @@ func (c *piController) StartProcess(imagePath string) error {
 			return
 		}
 
-		for actualAngle, numPhoto := 0.0, 0; actualAngle < 360; actualAngle, numPhoto = actualAngle+c.degreesForPhoto, numPhoto+1 {
+		for actualAngle, numPhoto := 0.0, 1; actualAngle < 360; actualAngle, numPhoto = actualAngle+c.degreesForPhoto, numPhoto+1 {
 			if !c.isProcessing() {
 				if glog.V(2) {
 					glog.Warningln("piController - StartProcess interrupted")
