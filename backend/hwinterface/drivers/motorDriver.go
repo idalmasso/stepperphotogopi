@@ -22,7 +22,7 @@ type StepperMotorDriver struct {
 
 // NewStepperMotorDriver return a new StepperMotorDriver given a DigitalWriter and pin and a directionpin.
 
-func NewStepperMotorDriver(a gpio.DigitalWriter, pin, directionPin string) *StepperMotorDriver {
+func NewStepperMotorDriver(a gpio.DigitalWriter, pin, directionPin string, degreesPerStep float64, millisWait int) *StepperMotorDriver {
 	l := &StepperMotorDriver{
 		name:           gobot.DefaultName("STEPPERMOTOR"),
 		pin:            pin,
@@ -30,14 +30,14 @@ func NewStepperMotorDriver(a gpio.DigitalWriter, pin, directionPin string) *Step
 		connection:     a,
 		steps:          0,
 		forward:        true,
-		millisWait:     5,
-		degreesPerStep: 1.8,
+		millisWait:     millisWait,
+		degreesPerStep: degreesPerStep,
 		Commander:      gobot.NewCommander(),
 	}
 
 	l.AddCommand("DoSteps", func(params map[string]interface{}) interface{} {
 		numSteps := params["numSteps"].(int)
-		_, err:=l.DoSteps(numSteps)
+		_, err := l.DoSteps(numSteps)
 		return err
 	})
 
@@ -89,9 +89,25 @@ func (l *StepperMotorDriver) NumSteps() int {
 func (l *StepperMotorDriver) DegreesPerStep() float64 {
 	return l.degreesPerStep
 }
+
+// SetDegreesPerStep sets the number of degrees done with 1 step
+func (l *StepperMotorDriver) SetDegreesPerStep(degrees float64) {
+	l.degreesPerStep = degrees
+}
+
+// WaitTimeBetweenSteps return the number of millis to wait between steps
+func (l *StepperMotorDriver) WaitTimeBetweenSteps() int {
+	return l.millisWait
+}
+
+// SetWaitTimeBetweenSteps sets   the number of millis to wait between steps
+func (l *StepperMotorDriver) SetWaitTimeBetweenSteps(wait int) {
+	l.millisWait = wait
+}
+
 // DoSteps does the actual number of requested steps in the set direction
-func (l *StepperMotorDriver) DoSteps(numSteps int) (stepsDone int,err error) {
-	stepsDone=0
+func (l *StepperMotorDriver) DoSteps(numSteps int) (stepsDone int, err error) {
+	stepsDone = 0
 	for l.steps = 0; l.steps < numSteps; l.steps++ {
 		if err = l.doSingleStep(); err != nil {
 			return

@@ -72,8 +72,9 @@ export default {
   max-width: 50%;
 }
 .camera-view {
-  border-style: none solid solid solid;
+  border-style: solid;
   border-width: 1pt;
   padding-bottom: 10pt;
+  margin: 1pt;
 }
 </style>
