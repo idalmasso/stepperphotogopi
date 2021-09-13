@@ -11,29 +11,37 @@ export default {
   data() {
     return {
       imageObjectURL: '',
-      interval: null,
+      collect: false,
     }
   },
   methods: {
     fetchImage() {
-      console.log(this.imageObjectURL)
-      fetch(this.imageUrl)
-        .then((response) => response.blob())
-        .then((imageBlob) => {
-          // Then create a local URL for that image and print it
-          this.imageObjectURL = URL.createObjectURL(imageBlob)
-          console.log(this.imageObjectURL)
-        })
-        .catch((e) => {
-          console.log(e)
-        })
+      if(this.collect)
+      {
+        fetch(this.imageUrl)
+          .then((response) => response.blob())
+          .then((imageBlob) => {
+            // Then create a local URL for that image and print it
+            this.imageObjectURL = URL.createObjectURL(imageBlob)
+            console.log(this.imageObjectURL)
+            if(this.collect){
+              setTimeout(this.fetchImage, 2000);
+            }
+          })
+          .catch((e) => {
+            console.log(e)
+            if(this.collect){
+              setTimeout(this.fetchImage, 2000);
+            }
+          })
+      }
     },
     swapInterval() {
-      if (this.interval == null) {
-        this.interval = setInterval(this.fetchImage, 3000)
+      if (!this.collect) {
+        this.collect=true;
+        this.fetchImage();
       } else {
-        clearInterval(this.interval)
-        this.interval = null
+        this.collect=false;
       }
     },
   },
@@ -42,16 +50,14 @@ export default {
       return '/api/get-snapshot'
     },
     swapIntervalText() {
-      if (this.interval == null) {
+      if (!this.collect) {
         return 'Raccogli immagini'
       }
       return 'stop'
     },
   },
   beforeUnmount() {
-    if (this.interval != null) {
-      clearInterval(this.interval)
-    }
+    this.collect=false;
   },
 }
 </script>
