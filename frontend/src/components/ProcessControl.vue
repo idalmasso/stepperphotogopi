@@ -1,5 +1,5 @@
 <template>
-  <div class=process-control>
+  <div class="process-control">
     <h2>Full process starter</h2>
     <div class="error-text" v-if="error">{{ error }}</div>
     <form v-if="motorStatus != 'working'">
@@ -42,7 +42,7 @@ export default {
         })
     },
     submit() {
-      fetch('/api/start-process', {
+      fetch('/api/processes', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -77,20 +77,18 @@ export default {
   },
   mounted() {
     this.statusRequest = setInterval(this.requestStatus, 1000)
-    this.$emit('setInterval', this.statusRequest);
+    this.$emit('setInterval', this.statusRequest)
   },
-  unmounted(){
-    console.log("ProcessControl Clearing statusRequest")
+  unmounted() {
+    console.log('ProcessControl Clearing statusRequest')
     clearInterval(this.statusRequest)
-  }
-  
+  },
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
-.error-text{
-  color:red;
+.error-text {
+  color: red;
 }
 </style>

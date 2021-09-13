@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+
+	"github.com/go-chi/chi/v5"
 )
 
 func (s *MachineServer) getListProcessDone(w http.ResponseWriter, r *http.Request) {
@@ -26,28 +28,25 @@ func (s *MachineServer) getListProcessDone(w http.ResponseWriter, r *http.Reques
 }
 
 func (s *MachineServer) deleteProcessDone(w http.ResponseWriter, r *http.Request) {
-	val := r.URL.Query().Get("process")
+	val := chi.URLParam(r, "process");
 	if val != "" {
-		if s.machine.GetActualProcessName() == val {
+		if s.machine.GetActualProcessName()  == val && s.machine.IsWorking(){
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(errorMessage{Message: "cannot delete the process actually processing"})
 			return
 		}
 		if _, err := os.Stat(filepath.Join(s.configuration.PhotoDirectory, val)); !os.IsNotExist(err) {
-			os.RemoveAll(filepath.Join(s.configuration.PhotoDirectory, val))
+			if err=os.RemoveAll(filepath.Join(s.configuration.PhotoDirectory, val)); err!=nil{
+				w.WriteHeader(http.StatusInternalServerError)
+				json.NewEncoder(w).Encode(errorMessage{Message: err.Error()})
+				return
+			}
+			json.NewEncoder(w).Encode(valueResponse{Value: "ok"})
+			w.WriteHeader(http.StatusOK)
+			return
 		}
 
 	}
-	json.NewEncoder(w).Encode(valueResponse{Value: "ok"})
-	w.WriteHeader(http.StatusOK)
-}
-func (s *MachineServer) getImagesProcessDone(w http.ResponseWriter, r *http.Request) {
-	s.machine.SetDegreesMovement(9)
-	if err := s.machine.StartProcess(s.configuration.PhotoDirectory); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(errorMessage{Message: err.Error()})
-		return
-	}
-	json.NewEncoder(w).Encode(valueResponse{Value: "ok"})
-	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(errorMessage{Message: "not found"})
+	w.WriteHeader(http.StatusNotFound)
 }

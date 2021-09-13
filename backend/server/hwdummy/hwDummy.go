@@ -78,7 +78,7 @@ func (c *dummyController) StartProcess(imagePath string) error {
 		defer c.setProcessing(false)
 		if c.degreesForPhoto == 0 {
 			if glog.V(1) {
-				glog.Errorln("piController - Set to 0 degrees")
+				glog.Errorln("dummyController - Set to 0 degrees")
 			}
 			return
 		}
@@ -86,7 +86,7 @@ func (c *dummyController) StartProcess(imagePath string) error {
 		newpath := imagePath
 		if err := os.MkdirAll(newpath, os.ModePerm); err != nil {
 			if glog.V(1) {
-				glog.Errorln("piController - StartProcess error on create public folder", err.Error())
+				glog.Errorln("dummyController - StartProcess error on create public folder", err.Error())
 			}
 			return
 		}
@@ -95,7 +95,7 @@ func (c *dummyController) StartProcess(imagePath string) error {
 		newpath = filepath.Join(newpath, c.actualProcessName)
 		if err := os.MkdirAll(newpath, os.ModePerm); err != nil {
 			if glog.V(1) {
-				glog.Errorln("piController - StartProcess error on create folder", newpath, err.Error())
+				glog.Errorln("dummyController - StartProcess error on create folder", newpath, err.Error())
 			}
 			return
 		}
@@ -103,7 +103,7 @@ func (c *dummyController) StartProcess(imagePath string) error {
 		for actualAngle, numPhoto := 0.0, 1; actualAngle < 360; actualAngle, numPhoto = actualAngle+c.degreesForPhoto, numPhoto+1 {
 			if !c.isProcessing() {
 				if glog.V(2) {
-					glog.Warningln("piController - StartProcess interrupted")
+					glog.Warningln("dummyController - StartProcess interrupted")
 				}
 				return
 			}
@@ -111,16 +111,18 @@ func (c *dummyController) StartProcess(imagePath string) error {
 			file, err := os.Create(filepath.Join(newpath, strconv.FormatInt(int64(numPhoto), 10)+".jpg"))
 			if err != nil {
 				if glog.V(1) {
-					glog.Errorln("piController - Gotoangle error on create photo file", newpath+"-"+strconv.FormatInt(int64(numPhoto), 10)+".jpg", err.Error())
+					glog.Errorln("dummyController - Gotoangle error on create photo file", newpath+"-"+strconv.FormatInt(int64(numPhoto), 10)+".jpg", err.Error())
 				}
 				return
 			}
 			if err := c.CameraSnapshot(file); err != nil {
 				if glog.V(1) {
-					glog.Errorln("piController - CameraSnapshot error", err.Error())
+					glog.Errorln("dummyController - CameraSnapshot error", err.Error())
 				}
+				file.Close()
 				return
 			}
+			file.Close()
 		}
 	}()
 

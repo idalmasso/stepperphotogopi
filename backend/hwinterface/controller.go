@@ -95,8 +95,10 @@ func (c *piController) StartProcess(imagePath string) error {
 				if glog.V(1) {
 					glog.Errorln("piController - CameraSnapshot error", err.Error())
 				}
+				file.Close()
 				return
 			}
+			file.Close()
 		}
 	}()
 
