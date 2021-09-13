@@ -82,6 +82,7 @@ export default {
     this.statusRequest = setInterval(this.requestStatus, 1000)
   },
   beforeUnmount() {
+    console.log("MotorControl Clearing statusRequest")
     clearInterval(this.statusRequest)
   },
 }

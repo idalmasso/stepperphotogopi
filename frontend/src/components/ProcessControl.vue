@@ -79,6 +79,7 @@ export default {
     this.statusRequest = setInterval(this.requestStatus, 1000)
   },
   beforeUnmount() {
+    console.log("ProcessControl Clearing statusRequest")
     clearInterval(this.statusRequest)
   },
 }

@@ -12,6 +12,7 @@ export default {
     return {
       imageObjectURL: '',
       collect: false,
+      idCollect: -1
     }
   },
   methods: {
@@ -25,13 +26,13 @@ export default {
             this.imageObjectURL = URL.createObjectURL(imageBlob)
             console.log(this.imageObjectURL)
             if(this.collect){
-              setTimeout(this.fetchImage, 2000);
+              this.idCollect=setTimeout(this.fetchImage, 2000);
             }
           })
           .catch((e) => {
             console.log(e)
             if(this.collect){
-              setTimeout(this.fetchImage, 2000);
+              this.idCollect=setTimeout(this.fetchImage, 2000);
             }
           })
       }
@@ -57,7 +58,9 @@ export default {
     },
   },
   beforeUnmount() {
+    console.log("CameraView Clearing statusRequest")
     this.collect=false;
+    clearTimeout(this.idCollect);
   },
 }
 </script>
