@@ -1,14 +1,14 @@
 <template>
   <div class="process-control">
-    <h2>Full process starter</h2>
+    <h2>Gestione processo</h2>
     <div class="error-text" v-if="error">{{ error }}</div>
     <form v-if="motorStatus != 'working'">
-      <button type="button" @click="submit">START</button>
+      <button type="button" @click="submit">Start</button>
     </form>
     <button v-if="motorStatus == 'working'" @click="stopProcess">
-      Stop process
+      Stop
     </button>
-    <h4>Motor status: {{ motorStatus }}</h4>
+    <h4>Stato motore: {{ motorStatus }}</h4>
   </div>
 </template>
 

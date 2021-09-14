@@ -5,6 +5,7 @@
     <table>
       <tr>
         <th>Processo</th>
+        <th>Scarica</th>
         <th>Elimina</th>
       </tr>
       <tr v-for="process in processes" :key="process">
@@ -19,7 +20,10 @@
           >
         </td>
         <td>
-          <button @click="deleteProcess(process)">DELETE</button>
+          <button @click="downloadProcess(process)">Scarica</button>
+        </td>
+        <td>
+          <button @click="deleteProcess(process)">Elimina</button>
         </td>
       </tr>
     </table>
@@ -58,6 +62,32 @@ export default {
           this.getProcesses()
         })
     },
+    downloadProcess(process){
+      fetch('/api/processes/' + process, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+        .then(async(a) => {
+          if(a.ok){
+            return a.json()
+          } else {
+            throw Error(await a.text())
+          }
+        })
+        .then((data) => {
+          console.log(data)
+          var link = document.createElement("a");
+          link.download = process;
+          link.href = data['value'];
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          
+        })
+        .catch(err=> this.message=err)
+    },
     getProcesses() {
       fetch('/api/processes')
         .then((a) => {
@@ -76,4 +106,6 @@ export default {
 }
 </script>
 
-<style></style>
+<style scoped>
+tr:hover {background-color: #ddd;}
+</style>

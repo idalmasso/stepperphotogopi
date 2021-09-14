@@ -1,7 +1,6 @@
-# Server configurations
 hardware:
   motorDegreePerStep: 1.8
   waitForStep: 5
   gearRatio: 1
-photoDirectory: '../../images'
-distributionDirectory: '../../frontend/dist'
+photoDirectory: ../../images
+distributionDirectory: ../../frontend/dist

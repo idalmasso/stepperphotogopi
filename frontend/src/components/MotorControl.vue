@@ -1,16 +1,16 @@
 <template>
   <div class="motor-control">
-    <h2>Motor test</h2>
+    <h2>Motore test</h2>
     <div class="error-text" v-if="error">{{ error }}</div>
     <form v-if="motorStatus != 'working'">
-      <label for="degreerequest">Degrees</label>
+      <label for="degreerequest">Gradi</label>
       <input id="degreerequest" type="text" v-model="degrees" />
-      <button type="button" @click="submit">INIZIA</button>
+      <button type="button" @click="submit">Start</button>
     </form>
     <button v-if="motorStatus == 'working'" @click="stopMotor">
       STOP
     </button>
-    <h4>Motor status: {{ motorStatus }}</h4>
+    <h4>Stato motore: {{ motorStatus }}</h4>
   </div>
 </template>
 

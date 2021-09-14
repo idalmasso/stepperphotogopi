@@ -8,7 +8,6 @@ import (
 	"image/draw"
 	"image/jpeg"
 	"io"
-	"log"
 	"math/rand"
 	"os"
 	"path/filepath"
@@ -192,20 +191,20 @@ func (c *dummyController) SetMotorDegreePerStep(degrees float64) {
 	if glog.V(3) {
 		glog.Infoln("dummyController - dummyController.SetMotorDegreePerStep - start")
 	}
-	return
+
 }
 
 func (c *dummyController) SetWaitForStep(waitTimeMillis int) {
 	if glog.V(3) {
 		glog.Infoln("dummyController - dummyController.SetWaitForStep - start")
 	}
-	return
+
 }
 func (c *dummyController) SetGearRatio(ratio float64) {
 	if glog.V(3) {
 		glog.Infoln("dummyController - dummyController.SetGearRatio - start")
 	}
-	return
+
 }
 
 func (c *dummyController) GetMotorDegreePerStep() float64 {
@@ -237,10 +236,14 @@ func (c *dummyController) CameraSnapshot(w io.Writer) (err error) {
 	draw.Draw(m, m.Bounds(), &image.Uniform{blue}, image.Point{1, 1}, draw.Src)
 	buffer := new(bytes.Buffer)
 	if err := jpeg.Encode(buffer, m, nil); err != nil {
-		log.Println("unable to encode image.")
+		if glog.V(1) {
+			glog.Errorln("unable to encode image.")
+		}
 	}
 	if _, err = w.Write(buffer.Bytes()); err != nil {
-		log.Println("unable to write image.")
+		if glog.V(1) {
+			glog.Errorln("unable to write image.")
+		}
 	}
 	return
 }

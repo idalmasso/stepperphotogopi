@@ -75,14 +75,19 @@ func (s *MachineServer) Init(machine controllerMachine) {
 			processRouter.Get("/", s.getListProcessDone)
 			processRouter.Post("/", s.startProcess)
 			processRouter.Delete("/{process}", s.deleteProcessDone)
+			processRouter.Get("/{process}", s.getZipProcess)
 		})
 		router.Get("/get-snapshot", s.cameraSnapshot)
 		router.Get("/machine-status", s.getMachineStatus)
 
 		router.Post("/move-motor", s.moveMotor)
 		router.Post("/stop-process", s.stopProcess)
-
+		router.Route("/configuration", func(configRouter chi.Router) {
+			configRouter.Get("/", s.getConfig)
+			configRouter.Put("/", s.updateConfig)
+		})
 	})
+
 	s.initialized = true
 }
 

@@ -1,6 +1,6 @@
 <template>
   <div class="ended-process-viewer">
-    <h2>Process {{ processName }}</h2>
+    <h2>Processo {{ processName }}</h2>
     <vue-three-sixty 
       :amount=39
       :imagePath="imageDir"

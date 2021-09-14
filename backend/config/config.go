@@ -8,12 +8,12 @@ import (
 
 type Config struct {
 	Hardware struct {
-		MotorDegreePerStep float64 `yaml:"motorDegreePerStep"`
-		WaitForStep        int     `yaml:"waitForStep"`
-		GearRatio          float64 `yaml:"gearRatio"`
-	} `yaml:"hardware"`
-	PhotoDirectory        string `yaml:"photoDirectory"`
-	DistributionDirectory string `yaml:"distributionDirectory"`
+		MotorDegreePerStep float64 `yaml:"motorDegreePerStep" json:"motorDegreePerStep,string"`
+		WaitForStep        int     `yaml:"waitForStep" json:"waitForStep,string"`
+		GearRatio          float64 `yaml:"gearRatio" json:"gearRatio,string"`
+	} `yaml:"hardware" json:"hardware"`
+	PhotoDirectory        string `yaml:"photoDirectory" json:"photoDirectory"`
+	DistributionDirectory string `yaml:"distributionDirectory" json:"distributionDirectory"`
 }
 
 func (c *Config) ReadFromFile(filename string) (err error) {
@@ -29,7 +29,7 @@ func (c *Config) ReadFromFile(filename string) (err error) {
 }
 
 func (c *Config) SaveToFile(filename string) (err error) {
-	f, err := os.Open(filename)
+	f, err := os.Create(filename)
 	if err != nil {
 		return err
 	}

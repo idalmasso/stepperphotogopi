@@ -3,11 +3,13 @@
     <nav class="nav">
       <ul class="menu">
         <li class="item">
-      <router-link class="nav-link" to="/">Ended processes</router-link></li>
+      <router-link class="nav-link" to="/">Processi terminati</router-link></li>
       <li class="item">
-      <router-link class="nav-link" to="/process">Process control</router-link></li>
+      <router-link class="nav-link" to="/process">Gestione processo</router-link></li>
       <li class="item">
-      <router-link class="nav-link" to="/test-page">Test page</router-link></li>
+      <router-link class="nav-link" to="/test-page">Test funzioni</router-link></li>
+      <li class="item">
+      <router-link class="nav-link" to="/configuration">Configurazione</router-link></li>
       </ul>
     </nav>
     <router-view class="content"/>
@@ -68,7 +70,28 @@ background: #222;
   padding: 10pt;
   background-color: gray;
   color: white;
-  box-shadow: 5px 10px;
   margin: 5pt;
 }
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+tr:nth-child(even){background-color: #f2f2f2;}
+
+
+
+th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: grey;
+  color: white;
+}
+
 </style>

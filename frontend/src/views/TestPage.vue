@@ -1,6 +1,6 @@
 <template>
   <div class="test-page">
-    <h1>Test page</h1>
+    <h1>Test funzioni</h1>
     <MotorControl @setInterval="motorIntervalSet"/>
     <CameraView @setTimeout="imageTimeoutSet"/>
   </div>

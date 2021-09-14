@@ -1,6 +1,6 @@
 <template>
   <div class="process">
-    <h1>Start Process</h1>
+    <h1>Gestione processi</h1>
     <ProcessControl @setInterval="motorIntervalSet"/>
   </div>
 </template>

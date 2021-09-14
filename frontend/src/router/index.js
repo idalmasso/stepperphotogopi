@@ -24,6 +24,12 @@ const routes = [
       import(/* webpackChunkName: "test-page" */ '../views/TestPage.vue'),
   },
   {
+    path: '/configuration',
+    name: 'ConfigurationView',
+    component: () =>
+      import(/* webpackChunkName: "configuration" */ '../views/ConfigurationView.vue'),
+  },
+  {
     path: '/process-viewer/:processName',
     name: 'EndedProcessViewer',
     component: () =>
