@@ -12,8 +12,11 @@ type Config struct {
 		WaitForStep        int     `yaml:"waitForStep" json:"waitForStep,string"`
 		GearRatio          float64 `yaml:"gearRatio" json:"gearRatio,string"`
 	} `yaml:"hardware" json:"hardware"`
-	PhotoDirectory        string `yaml:"photoDirectory" json:"photoDirectory"`
-	DistributionDirectory string `yaml:"distributionDirectory" json:"distributionDirectory"`
+	Server struct {
+		PhotoDirectory        string `yaml:"photoDirectory" json:"photoDirectory"`
+		DistributionDirectory string `yaml:"distributionDirectory" json:"distributionDirectory"`
+		Port                  string `yaml:"port" json:"port"`
+	} `yaml:"server" json:"server"`
 }
 
 func (c *Config) ReadFromFile(filename string) (err error) {

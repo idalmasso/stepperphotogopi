@@ -44,7 +44,12 @@ func (s *MachineServer) ListenAndServe() {
 	if !s.initialized {
 		panic("Server not initialized")
 	}
-	http.ListenAndServe(":3333", s.Router)
+	if glog.V(3) {
+		glog.Infoln("MachineServer -  MachineServer.starting on port", s.configuration.Server.Port)
+	}
+	if err := http.ListenAndServe(":"+s.configuration.Server.Port, s.Router); err != nil {
+		panic("Cannot listen on server: " + err.Error())
+	}
 }
 
 //Init initialize the server router and set the controllerMachine needed to do the work
@@ -68,8 +73,8 @@ func (s *MachineServer) Init(machine controllerMachine) {
 	s.Router.Use(middleware.Recoverer)
 	s.Router.Use(middleware.Timeout(60 * time.Second))
 
-	FileServer(s.Router.(*chi.Mux), s.configuration.DistributionDirectory)
-	FileServerImages(s.Router.(*chi.Mux), s.configuration.PhotoDirectory)
+	FileServer(s.Router.(*chi.Mux), s.configuration.Server.DistributionDirectory)
+	FileServerImages(s.Router.(*chi.Mux), s.configuration.Server.PhotoDirectory)
 	s.Router.Route("/api", func(router chi.Router) {
 		router.Route("/processes", func(processRouter chi.Router) {
 			processRouter.Get("/", s.getListProcessDone)

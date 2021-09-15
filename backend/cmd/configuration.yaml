@@ -2,5 +2,7 @@ hardware:
   motorDegreePerStep: 1.8
   waitForStep: 5
   gearRatio: 1
-photoDirectory: ../../images
-distributionDirectory: ../../frontend/dist
+server:
+  photoDirectory: ../../images
+  distributionDirectory: ../../frontend/dist
+  port: 3333

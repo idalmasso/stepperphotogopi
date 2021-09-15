@@ -13,7 +13,7 @@ import (
 )
 
 func (s *MachineServer) getListProcessDone(w http.ResponseWriter, r *http.Request) {
-	if values, err := os.ReadDir(s.configuration.PhotoDirectory); err != nil {
+	if values, err := os.ReadDir(s.configuration.Server.PhotoDirectory); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(errorMessage{Message: err.Error()})
 		return
@@ -38,14 +38,14 @@ func (s *MachineServer) deleteProcessDone(w http.ResponseWriter, r *http.Request
 			json.NewEncoder(w).Encode(errorMessage{Message: "cannot delete the process actually processing"})
 			return
 		}
-		if _, err := os.Stat(filepath.Join(s.configuration.PhotoDirectory, val)); !os.IsNotExist(err) {
-			if err = os.RemoveAll(filepath.Join(s.configuration.PhotoDirectory, val)); err != nil {
+		if _, err := os.Stat(filepath.Join(s.configuration.Server.PhotoDirectory, val)); !os.IsNotExist(err) {
+			if err = os.RemoveAll(filepath.Join(s.configuration.Server.PhotoDirectory, val)); err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
 				json.NewEncoder(w).Encode(errorMessage{Message: err.Error()})
 				return
 			}
-			if _, err := os.Stat(filepath.Join(s.configuration.PhotoDirectory, val+".zip")); !os.IsNotExist(err) {
-				if err = os.Remove(filepath.Join(s.configuration.PhotoDirectory, val+".zip")); err != nil {
+			if _, err := os.Stat(filepath.Join(s.configuration.Server.PhotoDirectory, val+".zip")); !os.IsNotExist(err) {
+				if err = os.Remove(filepath.Join(s.configuration.Server.PhotoDirectory, val+".zip")); err != nil {
 					w.WriteHeader(http.StatusInternalServerError)
 					json.NewEncoder(w).Encode(errorMessage{Message: err.Error()})
 					return
@@ -69,7 +69,7 @@ func (s *MachineServer) getZipProcess(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(errorMessage{Message: "cannot get zip for the process actually processing"})
 			return
 		}
-		zipFileName := filepath.Join(s.configuration.PhotoDirectory, processId+".zip")
+		zipFileName := filepath.Join(s.configuration.Server.PhotoDirectory, processId+".zip")
 		if _, err := os.Stat(zipFileName); os.IsNotExist(err) {
 			zipFile, err := os.Create(zipFileName)
 			if err != nil {
@@ -104,7 +104,7 @@ func (s *MachineServer) getZipProcess(w http.ResponseWriter, r *http.Request) {
 
 				return nil
 			}
-			err = filepath.Walk(filepath.Join(s.configuration.PhotoDirectory, processId), walker)
+			err = filepath.Walk(filepath.Join(s.configuration.Server.PhotoDirectory, processId), walker)
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
 				json.NewEncoder(w).Encode(errorMessage{Message: err.Error()})
@@ -116,7 +116,7 @@ func (s *MachineServer) getZipProcess(w http.ResponseWriter, r *http.Request) {
 			writer.Close()
 			zipFile.Close()
 		}
-		zipFileName = strings.Replace(zipFileName, filepath.Join(s.configuration.PhotoDirectory), "/process-images", 1)
+		zipFileName = strings.Replace(zipFileName, filepath.Join(s.configuration.Server.PhotoDirectory), "/process-images", 1)
 		json.NewEncoder(w).Encode(valueResponse{Value: zipFileName})
 		w.WriteHeader(http.StatusOK)
 

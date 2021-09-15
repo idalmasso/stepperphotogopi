@@ -12,9 +12,11 @@
     <label for="ratioMotor">Rapporto trasmissione albero motore/albero tornio</label></td><td>
     <input id="ratioMotor" type="number" v-model="configuration.hardware.gearRatio" /></td></tr><tr><td>
     <label for="imagePath">Path immagini</label></td><td>
-    <input id="imagePath" type="text" v-model="configuration.photoDirectory" /></td></tr><tr><td>
+    <input id="imagePath" type="text" v-model="configuration.server.photoDirectory" /></td></tr><tr><td>
     <label for="distPath">Path folder distribuzione</label></td><td>
-    <input id="distPath" type="text" v-model="configuration.distributionDirectory" /></td></tr><tr>
+    <input id="distPath" type="text" v-model="configuration.server.distributionDirectory" /></td></tr><tr><td>
+    <label for="serverPort">Porta server (richiede restart)</label></td><td>
+    <input id="serverPort" type="text" v-model="configuration.server.port" /></td></tr><tr>
       <td></td><td><button type="button" @click="updateConfiguration">Aggiorna</button></td></tr>
     </table>
   </form>
@@ -33,8 +35,11 @@ export default {
           waitForStep:0,
           gearRatio:0
         },
-        photoDirectory:"",
-        distributionDirectory:""
+        server: {
+          photoDirectory:"",
+          distributionDirectory:"",
+          port: 3333
+        }
       }
     }
   },
