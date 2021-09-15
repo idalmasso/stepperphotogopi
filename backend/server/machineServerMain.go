@@ -31,6 +31,7 @@ type controllerMachine interface {
 	SetCameraContrast(int)
 	SetCameraSharpness(int)
 	SetCameraBrightness(int)
+	SetOnButtonPress(callback func ())
 }
 
 //PiServer
@@ -75,7 +76,7 @@ func (s *MachineServer) Init(machine controllerMachine) {
 	s.machine.SetCameraBrightness(s.configuration.Hardware.Camera.Brightness)
 	s.machine.SetCameraContrast(s.configuration.Hardware.Camera.Contrast)
 	s.machine.SetCameraSharpness(s.configuration.Hardware.Camera.Sharpness)
-
+	s.machine.SetOnButtonPress(func(){  s.machine.StartProcess(s.configuration.Server.PhotoDirectory)})
 	s.Router = chi.NewRouter()
 	s.Router.Use(middleware.RequestID)
 	s.Router.Use(middleware.RealIP)

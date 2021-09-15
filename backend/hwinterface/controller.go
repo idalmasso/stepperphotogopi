@@ -11,6 +11,7 @@ import (
 
 	"github.com/golang/glog"
 	"github.com/idalmasso/stepperphotogopi/backend/hwinterface/drivers"
+	"gobot.io/x/gobot/drivers/gpio"
 	"gobot.io/x/gobot/platforms/raspi"
 )
 
@@ -20,8 +21,10 @@ type piController struct {
 	motor                  *drivers.StepperMotorDriver
 	gearTransmissionDriver *drivers.TransmissionFromStepperMotorDriver
 	camera                 *drivers.CameraDriver
+	buttonInput						 *gpio.ButtonDriver 
 	mutex                  sync.RWMutex
 	actualProcessName      string
+	buttonPressFunc					func()
 }
 
 func (c *piController) SetDegreesMovement(degrees float64) error {
@@ -137,8 +140,7 @@ func (c *piController) moveMotorWork(numSteps int) {
 	if glog.V(3) {
 		glog.Infoln("piController - moveMotorWork doing steps", numSteps)
 	}
-
-	//RAMP here! and then, each time
+	c.motor.DoSteps(numSteps)
 	for stepsDone := 0; stepsDone < numSteps; {
 		if c.isProcessing() {
 			c.motor.DoSteps(4)
@@ -253,7 +255,13 @@ func (c *piController) SetCameraHeight(height int)         { c.camera.SetHeight(
 func (c *piController) SetCameraContrast(contrast int)     { c.camera.SetContrast(contrast) }
 func (c *piController) SetCameraSharpness(sharpness int)   { c.camera.SetSharpness(sharpness) }
 func (c *piController) SetCameraBrightness(brightness int) { c.camera.SetBrightness(brightness) }
-func NewController() piController {
+func (c *piController) SetOnButtonPress(callback func ()){
+	c.buttonPressFunc=callback
+}
+func (c *piController) buttonPressed(interface{}) {
+	c.buttonPressFunc()
+}
+func NewController() *piController {
 
 	r := raspi.NewAdaptor()
 	r.Connect()
@@ -263,8 +271,15 @@ func NewController() piController {
 	camera := drivers.NewCameraDriver()
 	camera.Start()
 	//TODO: Update the ratio here!
-
+	buttonInput := gpio.NewButtonDriver(r, "15", time.Duration(10*time.Millisecond))
+	
+	buttonInput.Start()
+	
 	gearTransmissionDriver := drivers.NewTransmissionStepperMotorDriver(motor, 1)
 	gearTransmissionDriver.Start()
-	return piController{motor: motor, camera: camera, gearTransmissionDriver: gearTransmissionDriver}
+	pi:= piController{motor: motor, camera: camera, gearTransmissionDriver: gearTransmissionDriver, buttonInput: buttonInput}
+	buttonInput.On(gpio.ButtonRelease,pi.buttonPressed )
+	return &pi
 }
+
+

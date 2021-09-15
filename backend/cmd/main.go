@@ -30,12 +30,9 @@ func main() {
 	}
 	controller := hwinterface.NewController()
 	//controller := hwdummy.NewController()
-	controller.SetMotorDegreePerStep(1.8)
-	controller.SetWaitForStep(5)
-	controller.SetGearRatio(1)
-
+	
 	server := server.MachineServer{}
-	server.Init(&controller)
+	server.Init(controller)
 	server.ListenAndServe()
 }
 
@@ -47,4 +44,8 @@ func isFlagPassed(name string) bool {
 		}
 	})
 	return found
+}
+
+func doProcessButton(){
+	
 }
