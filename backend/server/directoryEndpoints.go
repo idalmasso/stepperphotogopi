@@ -82,7 +82,9 @@ func (s *MachineServer) getZipProcess(w http.ResponseWriter, r *http.Request) {
 			writer := zip.NewWriter(zipFile)
 
 			walker := func(path string, info os.FileInfo, err error) error {
-
+				if err!=nil{
+					return err
+				}
 				if info.IsDir() {
 					return nil
 				}
