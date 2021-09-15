@@ -24,6 +24,7 @@ func (s *MachineServer) getListProcessDone(w http.ResponseWriter, r *http.Reques
 				list.Value = append(list.Value, value.Name())
 			}
 		}
+
 		json.NewEncoder(w).Encode(list)
 		w.WriteHeader(http.StatusOK)
 	}

@@ -4,13 +4,36 @@
   <form>
     <table>
       <tr>
+        <h2>Motore</h2>
+      </tr>
+      <tr>
       <td>
     <label for="degreePerSteprequest">Gradi per passo di motore</label></td><td>
     <input id="degreePerSteprequest" type="number" step="0.1" v-model="configuration.hardware.motorDegreePerStep" /></td></tr><tr><td>
     <label for="millisecsPerStep">Millisecondi per passo di motore</label></td><td>
     <input id="millisecsPerStep" type="number" v-model="configuration.hardware.waitForStep" /></td></tr><tr><td>
     <label for="ratioMotor">Rapporto trasmissione albero motore/albero tornio</label></td><td>
-    <input id="ratioMotor" type="number" v-model="configuration.hardware.gearRatio" /></td></tr><tr><td>
+    <input id="ratioMotor" type="number" v-model="configuration.hardware.gearRatio" /></td></tr>
+    <tr>
+        <h2>Camera</h2>
+      </tr>
+      <tr>
+      <td>
+    <label for="height">Altezza immagine px</label></td><td>
+    <input id="height" type="number" v-model="configuration.hardware.camera.height" /></td></tr><tr><td>
+    <label for="width">Larghezza immagine px</label></td><td>
+    <input id="width" type="number" v-model="configuration.hardware.camera.width" /></td></tr><tr><td>
+      <label for="brightness">Luminosità</label></td><td>
+    <input id="brightness" type="number" v-model="configuration.hardware.camera.brightness" /></td></tr><tr><td>
+      <label for="contrast">Contrasto</label></td><td>
+    <input id="contrast" type="number" v-model="configuration.hardware.camera.contrast" /></td></tr><tr><td>
+      <label for="sharpness">Definizione</label></td><td>
+    <input id="sharpness" type="number" v-model="configuration.hardware.camera.sharpness" /></td></tr>
+      <tr>
+        <h2>Server</h2>
+      </tr>
+      <tr>
+      <td>
     <label for="imagePath">Path immagini</label></td><td>
     <input id="imagePath" type="text" v-model="configuration.server.photoDirectory" /></td></tr><tr><td>
     <label for="distPath">Path folder distribuzione</label></td><td>
@@ -33,7 +56,14 @@ export default {
         hardware: {
           motorDegreePerStep:0,
           waitForStep:0,
-          gearRatio:0
+          gearRatio:0,
+          camera:{
+            height:0,
+            width: 0,
+            brightness: 0,
+            sharpness: 0,
+            contrast: 0,
+          }
         },
         server: {
           photoDirectory:"",
@@ -68,7 +98,6 @@ export default {
     })
     .then(config=>{
       this.configuration=config
-      console.log(this.configuration)
     })
   }
 }

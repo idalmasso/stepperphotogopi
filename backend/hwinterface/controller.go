@@ -80,17 +80,18 @@ func (c *piController) StartProcess(imagePath string) error {
 			}
 			if err := c.gearTransmissionDriver.GoToAngle(actualAngle); err != nil {
 				if glog.V(1) {
-					glog.Errorln("piController - Gotoangle error on create public folder", err.Error())
+					glog.Errorln("piController - CameraSnapshot gotoangle error", err.Error())
 				}
 				return
 			}
 			file, err := os.Create(filepath.Join(newpath, strconv.FormatInt(int64(numPhoto), 10)+".jpg"))
 			if err != nil {
 				if glog.V(1) {
-					glog.Errorln("piController - Gotoangle error on create photo file", newpath+"-"+strconv.FormatInt(int64(numPhoto), 10)+".jpg", err.Error())
+					glog.Errorln("piController - CameraSnapshot error on create photo file", newpath+"-"+strconv.FormatInt(int64(numPhoto), 10)+".jpg", err.Error())
 				}
 				return
 			}
+
 			if err := c.CameraSnapshot(file); err != nil {
 				if glog.V(1) {
 					glog.Errorln("piController - CameraSnapshot error", err.Error())
@@ -247,6 +248,11 @@ func (c *piController) GetGearRatio() float64 {
 	return c.gearTransmissionDriver.GetRatio()
 }
 
+func (c *piController) SetCameraWidth(width int)           { c.camera.SetWidth(width) }
+func (c *piController) SetCameraHeight(height int)         { c.camera.SetHeight(height) }
+func (c *piController) SetCameraContrast(contrast int)     { c.camera.SetContrast(contrast) }
+func (c *piController) SetCameraSharpness(sharpness int)   { c.camera.SetSharpness(sharpness) }
+func (c *piController) SetCameraBrightness(brightness int) { c.camera.SetBrightness(brightness) }
 func NewController() piController {
 
 	r := raspi.NewAdaptor()

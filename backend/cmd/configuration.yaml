@@ -2,6 +2,12 @@ hardware:
   motorDegreePerStep: 1.8
   waitForStep: 5
   gearRatio: 1
+  camera:
+    width: 2000
+    height: 1500
+    brightness: 50
+    contrast: 0
+    sharpness: 0
 server:
   photoDirectory: ../../images
   distributionDirectory: ../../frontend/dist

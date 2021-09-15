@@ -50,7 +50,7 @@ export default {
         .then((a) => {
           if (a.ok) {
             const idx = this.processes.findIndex((val) => val == process)
-            console.log(idx)
+            
             if (idx > 0) {
               this.processes.splice(idx, 1)
             }
@@ -77,7 +77,7 @@ export default {
           }
         })
         .then((data) => {
-          console.log(data)
+          
           var link = document.createElement("a");
           link.download = process;
           link.href = data['value'];
@@ -91,11 +91,9 @@ export default {
     getProcesses() {
       fetch('/api/processes')
         .then((a) => {
-          console.log(a)
           return a.json()
         })
         .then((data) => {
-          console.log(data)
           this.processes = data['value']
         })
     },

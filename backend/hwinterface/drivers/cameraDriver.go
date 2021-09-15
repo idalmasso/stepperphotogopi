@@ -14,10 +14,10 @@ import (
 
 // CameraDriver represents a Camera
 type CameraDriver struct {
-	name string
-	connection     	gpio.DigitalWriter
-	secondsWait    	int
-	still 					*raspicam.Still
+	name        string
+	connection  gpio.DigitalWriter
+	secondsWait int
+	still       *raspicam.Still
 	gobot.Commander
 }
 
@@ -25,28 +25,23 @@ type CameraDriver struct {
 //
 func NewCameraDriver() *CameraDriver {
 	l := &CameraDriver{
-		name:           gobot.DefaultName("CAMERA"),
-		secondsWait: 		1,
-		Commander:      gobot.NewCommander(),
-		
-		
+		name:        gobot.DefaultName("CAMERA"),
+		secondsWait: 1,
+		Commander:   gobot.NewCommander(),
+		still:       raspicam.NewStill(),
 	}
-	
+	l.still.Timeout = 1 * time.Second
+
+	l.still.Width = 2000
+	l.still.Height = 1500
+	l.still.Camera.Brightness = 50
+	l.still.Camera.Contrast = 0
+	l.still.Camera.Sharpness = 0
 	return l
 }
 
 // Start implements the Driver interface
-func (l *CameraDriver) Start() (err error) { 
-	l.still = raspicam.NewStill()
-	l.still.Timeout = 1 * time.Second
-	
-	l.still.Width=2000
-	l.still.Height=1500
-	l.still.Camera.Brightness = 50
-	l.still.Camera.Contrast = 0
-	l.still.Camera.Sharpness = 0
-	return 
-}
+func (l *CameraDriver) Start() (err error) { return }
 
 // Halt implements the Driver interface
 func (l *CameraDriver) Halt() (err error) { return }
@@ -56,7 +51,6 @@ func (l *CameraDriver) Name() string { return l.name }
 
 // SetName sets the CameraDriver name
 func (l *CameraDriver) SetName(n string) { l.name = n }
-
 
 // Connection returns the CameraDriver Connection
 func (l *CameraDriver) Connection() gobot.Connection {
@@ -68,7 +62,23 @@ func (l *CameraDriver) SecondsWait() int {
 	return l.secondsWait
 }
 
-// DoSteps does the actual number of requested steps in the set direction
+func (l *CameraDriver) SetWidth(width int) {
+	l.still.Width = width
+}
+func (l *CameraDriver) SetHeight(height int) {
+	l.still.Height = height
+}
+func (l *CameraDriver) SetBrightness(brightness int) {
+	l.still.Camera.Brightness = brightness
+}
+func (l *CameraDriver) SetContrast(contrast int) {
+	l.still.Camera.Contrast = contrast
+}
+func (l *CameraDriver) SetSharpness(sharpness int) {
+	l.still.Camera.Sharpness = sharpness
+}
+
+// DoPhoto does a photo and write in the passed writer
 func (l *CameraDriver) DoPhoto(w io.Writer) (err error) {
 	errCh := make(chan error)
 	go func() {
@@ -80,4 +90,3 @@ func (l *CameraDriver) DoPhoto(w io.Writer) (err error) {
 	raspicam.Capture(l.still, w, errCh)
 	return
 }
-

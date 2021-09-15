@@ -24,14 +24,13 @@ export default {
           .then((imageBlob) => {
             // Then create a local URL for that image and print it
             this.imageObjectURL = URL.createObjectURL(imageBlob)
-            console.log(this.imageObjectURL)
+            
             if(this.collect){
               this.idCollect=setTimeout(this.fetchImage, 2000);
               this.$emit('setTimeout', this.idCollect);
             }
           })
-          .catch((e) => {
-            console.log(e)
+          .catch(() => {
             if(this.collect){
               this.idCollect=setTimeout(this.fetchImage, 2000);
               this.$emit('setTimeout', this.idCollect);
@@ -61,7 +60,7 @@ export default {
     },
   },
   unmounted(){
-    console.log("ProcessControl Clearing statusRequest")
+    
     clearTimeout(this.idCollect)
   }
 }

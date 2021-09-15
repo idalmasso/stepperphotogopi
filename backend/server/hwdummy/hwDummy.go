@@ -226,7 +226,11 @@ func (c *dummyController) GetGearRatio() float64 {
 	}
 	return 0
 }
-
+func (c *dummyController) SetCameraWidth(int)           { return }
+func (c *dummyController) SetCameraHeight(int)          { return }
+func (c *dummyController) SetCameraContrast(int)        { return }
+func (c *dummyController) SetCameraSharpness(int)       { return }
+func (c *dummyController) SetCameraBrightness(int)      { return }
 func (c *dummyController) GetActualProcessName() string { return c.actualProcessName }
 
 //Writes a snapshot into the writer passed

@@ -26,6 +26,11 @@ type controllerMachine interface {
 	GetGearRatio() float64
 	GetWaitForStep() int
 	GetMotorDegreePerStep() float64
+	SetCameraWidth(int)
+	SetCameraHeight(int)
+	SetCameraContrast(int)
+	SetCameraSharpness(int)
+	SetCameraBrightness(int)
 }
 
 //PiServer
@@ -65,6 +70,11 @@ func (s *MachineServer) Init(machine controllerMachine) {
 	s.machine.SetMotorDegreePerStep(s.configuration.Hardware.MotorDegreePerStep)
 	s.machine.SetGearRatio(s.configuration.Hardware.GearRatio)
 	s.machine.SetWaitForStep(s.configuration.Hardware.WaitForStep)
+	s.machine.SetCameraHeight(s.configuration.Hardware.Camera.Height)
+	s.machine.SetCameraWidth(s.configuration.Hardware.Camera.Width)
+	s.machine.SetCameraBrightness(s.configuration.Hardware.Camera.Brightness)
+	s.machine.SetCameraContrast(s.configuration.Hardware.Camera.Contrast)
+	s.machine.SetCameraSharpness(s.configuration.Hardware.Camera.Sharpness)
 
 	s.Router = chi.NewRouter()
 	s.Router.Use(middleware.RequestID)
