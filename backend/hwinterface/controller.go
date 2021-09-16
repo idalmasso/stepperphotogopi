@@ -21,15 +21,15 @@ type piController struct {
 	motor                  *drivers.StepperMotorDriver
 	gearTransmissionDriver *drivers.TransmissionFromStepperMotorDriver
 	camera                 *drivers.CameraDriver
-	buttonInput						 *gpio.ButtonDriver 
+	buttonInput            *gpio.ButtonDriver
 	mutex                  sync.RWMutex
 	actualProcessName      string
-	buttonPressFunc					func()
+	buttonPressFunc        func()
 }
 
 func (c *piController) SetDegreesMovement(degrees float64) error {
 	if glog.V(3) {
-		glog.Infoln("piController - SetDegreesMovement called")
+		glog.Infoln("piController - SetDegreesMovement called w value", degrees)
 	}
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
@@ -255,8 +255,8 @@ func (c *piController) SetCameraHeight(height int)         { c.camera.SetHeight(
 func (c *piController) SetCameraContrast(contrast int)     { c.camera.SetContrast(contrast) }
 func (c *piController) SetCameraSharpness(sharpness int)   { c.camera.SetSharpness(sharpness) }
 func (c *piController) SetCameraBrightness(brightness int) { c.camera.SetBrightness(brightness) }
-func (c *piController) SetOnButtonPress(callback func ()){
-	c.buttonPressFunc=callback
+func (c *piController) SetOnButtonPress(callback func()) {
+	c.buttonPressFunc = callback
 }
 func (c *piController) buttonPressed(interface{}) {
 	c.buttonPressFunc()
@@ -272,14 +272,12 @@ func NewController() *piController {
 	camera.Start()
 	//TODO: Update the ratio here!
 	buttonInput := gpio.NewButtonDriver(r, "15", time.Duration(10*time.Millisecond))
-	
+
 	buttonInput.Start()
-	
+
 	gearTransmissionDriver := drivers.NewTransmissionStepperMotorDriver(motor, 1)
 	gearTransmissionDriver.Start()
-	pi:= piController{motor: motor, camera: camera, gearTransmissionDriver: gearTransmissionDriver, buttonInput: buttonInput}
-	buttonInput.On(gpio.ButtonRelease,pi.buttonPressed )
+	pi := piController{motor: motor, camera: camera, gearTransmissionDriver: gearTransmissionDriver, buttonInput: buttonInput}
+	buttonInput.On(gpio.ButtonRelease, pi.buttonPressed)
 	return &pi
 }
-
-

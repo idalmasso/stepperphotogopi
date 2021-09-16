@@ -26,6 +26,7 @@ func (s *MachineServer) updateConfig(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+	s.updateMachineFromConfig()
 	json.NewEncoder(w).Encode(valueResponse{Value: "ok"})
 	w.WriteHeader(http.StatusOK)
 }

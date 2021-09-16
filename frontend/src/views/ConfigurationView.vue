@@ -28,7 +28,9 @@
       <label for="contrast">Contrasto</label></td><td>
     <input id="contrast" type="number" v-model="configuration.hardware.camera.contrast" /></td></tr><tr><td>
       <label for="sharpness">Definizione</label></td><td>
-    <input id="sharpness" type="number" v-model="configuration.hardware.camera.sharpness" /></td></tr>
+    <input id="sharpness" type="number" v-model="configuration.hardware.camera.sharpness" /></td></tr><tr><td>
+     <label for="num-photo">Numero foto per ciclo</label></td><td>
+    <input id="num-photo" type="number" v-model="configuration.hardware.camera.numPhotosPerProcess" /></td></tr>
       <tr>
         <h2>Server</h2>
       </tr>
@@ -36,8 +38,6 @@
       <td>
     <label for="imagePath">Path immagini</label></td><td>
     <input id="imagePath" type="text" v-model="configuration.server.photoDirectory" /></td></tr><tr><td>
-    <label for="distPath">Path folder distribuzione</label></td><td>
-    <input id="distPath" type="text" v-model="configuration.server.distributionDirectory" /></td></tr><tr><td>
     <label for="serverPort">Porta server (richiede restart)</label></td><td>
     <input id="serverPort" type="text" v-model="configuration.server.port" /></td></tr><tr>
       <td></td><td><button type="button" @click="updateConfiguration">Aggiorna</button></td></tr>

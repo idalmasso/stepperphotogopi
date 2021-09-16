@@ -12,11 +12,12 @@ type Config struct {
 		WaitForStep        int     `yaml:"waitForStep" json:"waitForStep,string"`
 		GearRatio          float64 `yaml:"gearRatio" json:"gearRatio,string"`
 		Camera             struct {
-			Height     int `yaml:"height" json:"height,string"`
-			Width      int `yaml:"width" json:"width,string"`
-			Brightness int `yaml:"brightness" json:"brightness,string"`
-			Contrast   int `yaml:"contrast" json:"contrast,string"`
-			Sharpness  int `yaml:"sharpness" json:"sharpness,string"`
+			Height              int `yaml:"height" json:"height,string"`
+			Width               int `yaml:"width" json:"width,string"`
+			Brightness          int `yaml:"brightness" json:"brightness,string"`
+			Contrast            int `yaml:"contrast" json:"contrast,string"`
+			Sharpness           int `yaml:"sharpness" json:"sharpness,string"`
+			NumPhotosPerProcess int `yaml:"numPhotosPerProcess" json:"numPhotosPerProcess,string"`
 		} `yaml:"camera" json:"camera"`
 	} `yaml:"hardware" json:"hardware"`
 	Server struct {

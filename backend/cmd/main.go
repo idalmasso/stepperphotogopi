@@ -30,7 +30,7 @@ func main() {
 	}
 	controller := hwinterface.NewController()
 	//controller := hwdummy.NewController()
-	
+
 	server := server.MachineServer{}
 	server.Init(controller)
 	server.ListenAndServe()
@@ -44,8 +44,4 @@ func isFlagPassed(name string) bool {
 		}
 	})
 	return found
-}
-
-func doProcessButton(){
-	
 }

@@ -31,7 +31,7 @@ type controllerMachine interface {
 	SetCameraContrast(int)
 	SetCameraSharpness(int)
 	SetCameraBrightness(int)
-	SetOnButtonPress(callback func ())
+	SetOnButtonPress(callback func())
 }
 
 //PiServer
@@ -68,15 +68,7 @@ func (s *MachineServer) Init(machine controllerMachine) {
 		panic("cannot read configuration file")
 	}
 	s.machine = machine
-	s.machine.SetMotorDegreePerStep(s.configuration.Hardware.MotorDegreePerStep)
-	s.machine.SetGearRatio(s.configuration.Hardware.GearRatio)
-	s.machine.SetWaitForStep(s.configuration.Hardware.WaitForStep)
-	s.machine.SetCameraHeight(s.configuration.Hardware.Camera.Height)
-	s.machine.SetCameraWidth(s.configuration.Hardware.Camera.Width)
-	s.machine.SetCameraBrightness(s.configuration.Hardware.Camera.Brightness)
-	s.machine.SetCameraContrast(s.configuration.Hardware.Camera.Contrast)
-	s.machine.SetCameraSharpness(s.configuration.Hardware.Camera.Sharpness)
-	s.machine.SetOnButtonPress(func(){  s.machine.StartProcess(s.configuration.Server.PhotoDirectory)})
+	s.updateMachineFromConfig()
 	s.Router = chi.NewRouter()
 	s.Router.Use(middleware.RequestID)
 	s.Router.Use(middleware.RealIP)
@@ -105,6 +97,21 @@ func (s *MachineServer) Init(machine controllerMachine) {
 	})
 
 	s.initialized = true
+}
+
+func (s *MachineServer) updateMachineFromConfig() {
+	s.machine.SetMotorDegreePerStep(s.configuration.Hardware.MotorDegreePerStep)
+	s.machine.SetGearRatio(s.configuration.Hardware.GearRatio)
+	s.machine.SetWaitForStep(s.configuration.Hardware.WaitForStep)
+	s.machine.SetCameraHeight(s.configuration.Hardware.Camera.Height)
+	s.machine.SetCameraWidth(s.configuration.Hardware.Camera.Width)
+	s.machine.SetCameraBrightness(s.configuration.Hardware.Camera.Brightness)
+	s.machine.SetCameraContrast(s.configuration.Hardware.Camera.Contrast)
+	s.machine.SetCameraSharpness(s.configuration.Hardware.Camera.Sharpness)
+	s.machine.SetOnButtonPress(func() {
+		s.machine.SetDegreesMovement(float64(360) / float64(s.configuration.Hardware.Camera.NumPhotosPerProcess))
+		s.machine.StartProcess(s.configuration.Server.PhotoDirectory)
+	})
 }
 
 // FileServer conveniently sets up a http.FileServer handler to serve
