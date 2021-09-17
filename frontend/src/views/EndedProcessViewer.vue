@@ -4,7 +4,7 @@
     <vue-three-sixty
       :amount="39"
       :imagePath="imageDir"
-      fileName="{index}.jpg"
+      fileName="{index}.webp"
     />
   </div>
 </template>

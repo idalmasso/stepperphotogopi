@@ -1,7 +1,9 @@
 package hwinterface
 
 import (
+	"bytes"
 	"fmt"
+	"image/jpeg"
 	"io"
 	"os"
 	"path/filepath"
@@ -9,6 +11,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/CapsLock-Studio/go-webpbin"
 	"github.com/golang/glog"
 	"github.com/idalmasso/stepperphotogopi/backend/hwinterface/drivers"
 	"gobot.io/x/gobot/drivers/gpio"
@@ -87,17 +90,32 @@ func (c *piController) StartProcess(imagePath string) error {
 				}
 				return
 			}
-			file, err := os.Create(filepath.Join(newpath, strconv.FormatInt(int64(numPhoto), 10)+".jpg"))
+
+			var bytes bytes.Buffer
+			if err := c.CameraSnapshot(&bytes); err != nil {
+				if glog.V(1) {
+					glog.Errorln("piController - CameraSnapshot error", err.Error())
+				}
+				return
+			}
+			image, err := jpeg.Decode(&bytes)
 			if err != nil {
 				if glog.V(1) {
-					glog.Errorln("piController - CameraSnapshot error on create photo file", newpath+"-"+strconv.FormatInt(int64(numPhoto), 10)+".jpg", err.Error())
+					glog.Errorln("piController - CameraSnapshot error", err.Error())
+				}
+				return
+			}
+			file, err := os.Create(filepath.Join(newpath, strconv.FormatInt(int64(numPhoto), 10)+".webp"))
+			if err != nil {
+				if glog.V(1) {
+					glog.Errorln("piController - CameraSnapshot error on create photo file", newpath+"-"+strconv.FormatInt(int64(numPhoto), 10)+".webp", err.Error())
 				}
 				return
 			}
 
-			if err := c.CameraSnapshot(file); err != nil {
+			if err = webpbin.Encode(file, image); err != nil {
 				if glog.V(1) {
-					glog.Errorln("piController - CameraSnapshot error", err.Error())
+					glog.Errorln("piController - CameraSnapshot webpbin ", err.Error())
 				}
 				file.Close()
 				return
