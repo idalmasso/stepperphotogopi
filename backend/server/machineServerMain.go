@@ -109,8 +109,12 @@ func (s *MachineServer) updateMachineFromConfig() {
 	s.machine.SetCameraContrast(s.configuration.Hardware.Camera.Contrast)
 	s.machine.SetCameraSharpness(s.configuration.Hardware.Camera.Sharpness)
 	s.machine.SetOnButtonPress(func() {
-		s.machine.SetDegreesMovement(float64(360) / float64(s.configuration.Hardware.Camera.NumPhotosPerProcess))
-		s.machine.StartProcess(s.configuration.Server.PhotoDirectory)
+		if s.machine.IsWorking(){
+			s.machine.StopProcess()
+		} else {
+			s.machine.SetDegreesMovement(float64(360) / float64(s.configuration.Hardware.Camera.NumPhotosPerProcess))
+			s.machine.StartProcess(s.configuration.Server.PhotoDirectory)
+		}
 	})
 }
 
