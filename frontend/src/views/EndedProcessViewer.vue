@@ -2,7 +2,7 @@
   <div class="ended-process-viewer">
     <h2>Processo {{ processName }}</h2>
     <vue-three-sixty
-      :amount="numImages - 1"
+      :amount="numImages"
       :imagePath="imageDir"
       fileName="{index}.webp"
     />
