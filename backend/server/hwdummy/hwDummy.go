@@ -251,6 +251,10 @@ func (c *dummyController) CameraSnapshot(w io.Writer) (err error) {
 	}
 	return
 }
-func NewController() dummyController {
-	return dummyController{}
+
+func (c *dummyController) SetOnButtonPress(callback func()) {
+	
+}
+func NewController() *dummyController {
+	return &dummyController{}
 }

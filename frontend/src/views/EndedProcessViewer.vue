@@ -2,7 +2,7 @@
   <div class="ended-process-viewer">
     <h2>Processo {{ processName }}</h2>
     <vue-three-sixty
-      :amount="39"
+      :amount="numImages - 1"
       :imagePath="imageDir"
       fileName="{index}.webp"
     />
@@ -14,6 +14,7 @@ export default {
   name: 'EndedProcessViewer',
   props: {
     processName: String,
+    numImages: Number,
   },
   computed: {
     imageDir() {

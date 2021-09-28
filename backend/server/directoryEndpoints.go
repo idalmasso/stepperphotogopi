@@ -18,10 +18,12 @@ func (s *MachineServer) getListProcessDone(w http.ResponseWriter, r *http.Reques
 		json.NewEncoder(w).Encode(errorMessage{Message: err.Error()})
 		return
 	} else {
-		var list valueListStringResponse
+		var list valueListProcessFileListResponse
 		for _, value := range values {
 			if value.IsDir() && value.Name() != "." && value.Name() != ".." && value.Name() != s.machine.GetActualProcessName() {
-				list.Value = append(list.Value, value.Name())
+				files, _:= os.ReadDir(filepath.Join(s.configuration.Server.PhotoDirectory, value.Name()))
+				pfs := ProcessFileList{Name: value.Name(), NumFiles: len(files)}
+				list.Value = append(list.Value, pfs)
 			}
 		}
 

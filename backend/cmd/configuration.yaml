@@ -3,8 +3,8 @@ hardware:
   waitForStep: 5
   gearRatio: 1
   camera:
-    width: 2000
     height: 1500
+    width: 2000
     brightness: 50
     contrast: 0
     sharpness: 0
@@ -12,4 +12,11 @@ hardware:
 server:
   photoDirectory: ../../images
   distributionDirectory: ../../frontend/dist
-  port: 3333
+  port: "3333"
+eCommerce:
+  baseUrl: http://localhost:5000
+  tokensEndpoint: /auth/tokens
+  itemsListEndpoint: /api/items-id-name
+  postImageEndpoint: /api/add-panorama-photo
+  defaultUsername: ivano.dalmasso@gmail.com
+  defaultPassword: Abcd

@@ -25,6 +25,14 @@ type Config struct {
 		DistributionDirectory string `yaml:"distributionDirectory" json:"distributionDirectory"`
 		Port                  string `yaml:"port" json:"port"`
 	} `yaml:"server" json:"server"`
+	ECommerce struct {
+		BaseUrl        string `yaml:"baseUrl" json:"baseUrl"`
+		TokensEndpoint string `yaml:"tokensEndpoint" json:"tokensEndpoint"`
+		ItemsListEndpoint                  string `yaml:"itemsListEndpoint" json:"itemsListEndpoint"`
+		PostImageEndpoint                  string `yaml:"postImageEndpoint" json:"postImageEndpoint"`
+		DefaultUsername										string `yaml:"defaultUsername" json:"defaultUsername"`
+		DefaultPassword										string `yaml:"defaultPassword" json:"defaultPassword"`
+	} `yaml:"eCommerce" json:"eCommerce"`
 }
 
 func (c *Config) ReadFromFile(filename string) (err error) {
