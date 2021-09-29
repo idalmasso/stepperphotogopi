@@ -11,25 +11,29 @@ import (
 type StepperMotorDriver struct {
 	pin            string
 	directionPin   string
+	notSleepPin    string
 	name           string
 	connection     gpio.DigitalWriter
 	steps          int
 	forward        bool
 	millisWait     int
 	degreesPerStep float64
+	sleeping       bool
 	gobot.Commander
 }
 
 // NewStepperMotorDriver return a new StepperMotorDriver given a DigitalWriter and pin and a directionpin.
 
-func NewStepperMotorDriver(a gpio.DigitalWriter, pin, directionPin string, degreesPerStep float64, millisWait int) *StepperMotorDriver {
+func NewStepperMotorDriver(a gpio.DigitalWriter, pin, directionPin string, notSleepPin string, degreesPerStep float64, millisWait int) *StepperMotorDriver {
 	l := &StepperMotorDriver{
 		name:           gobot.DefaultName("STEPPERMOTOR"),
 		pin:            pin,
 		directionPin:   directionPin,
+		notSleepPin:    notSleepPin,
 		connection:     a,
 		steps:          0,
 		forward:        true,
+		sleeping:       true,
 		millisWait:     millisWait,
 		degreesPerStep: degreesPerStep,
 		Commander:      gobot.NewCommander(),
@@ -58,10 +62,16 @@ func NewStepperMotorDriver(a gpio.DigitalWriter, pin, directionPin string, degre
 }
 
 // Start implements the Driver interface
-func (l *StepperMotorDriver) Start() (err error) { return }
+func (l *StepperMotorDriver) Start() (err error) {
+	err = l.Sleep()
+	return
+}
 
 // Halt implements the Driver interface
-func (l *StepperMotorDriver) Halt() (err error) { return }
+func (l *StepperMotorDriver) Halt() (err error) {
+	err = l.Sleep()
+	return
+}
 
 // Name returns the StepperMotorDriver name
 func (l *StepperMotorDriver) Name() string { return l.name }
@@ -72,12 +82,34 @@ func (l *StepperMotorDriver) SetName(n string) { l.name = n }
 // Pin returns the StepperMotorDriver pin name
 func (l *StepperMotorDriver) Pin() string { return l.pin }
 
+// NotSleepPin returns the StepperMotorDriver sleep pinname  (enabled at 0 logic value)
+func (l *StepperMotorDriver) NotSleepPin() string { return l.notSleepPin }
+
 // DirectionPin returns the StepperMotorDriver direction pinname
 func (l *StepperMotorDriver) DirectionPin() string { return l.directionPin }
 
 // Connection returns the StepperMotorDriver Connection
 func (l *StepperMotorDriver) Connection() gobot.Connection {
 	return l.connection.(gobot.Connection)
+}
+
+//Sleep puts the motor in sleep state
+func (l *StepperMotorDriver) Sleep() (err error) {
+	err = l.connection.DigitalWrite(l.NotSleepPin(), 0)
+	l.sleeping = true
+	return
+}
+
+//Awake remove the motor from sleep state
+func (l *StepperMotorDriver) Awake() (err error) {
+	err = l.connection.DigitalWrite(l.NotSleepPin(), 1)
+	time.Sleep(100 * time.Millisecond)
+	l.sleeping = false
+	return
+}
+
+func (l *StepperMotorDriver) IsSleeping() bool {
+	return l.sleeping
 }
 
 // NumSteps return the number of steps done

@@ -138,6 +138,7 @@ func (c *piController) StopProcess() error {
 	defer c.mutex.Unlock()
 	if c.processing {
 		c.ledOk.On()
+		c.motor.Sleep()
 		c.processing = false
 		c.actualProcessName = ""
 	}
@@ -161,7 +162,6 @@ func (c *piController) moveMotorWork(numSteps int) {
 	if glog.V(3) {
 		glog.Infoln("piController - moveMotorWork doing steps", numSteps)
 	}
-	c.motor.DoSteps(numSteps)
 	for stepsDone := 0; stepsDone < numSteps; {
 		if c.isProcessing() {
 			c.motor.DoSteps(4)
@@ -194,6 +194,8 @@ func (c *piController) canSetStartProcess() bool {
 		return false
 	} else {
 		c.ledOk.Off()
+		c.motor.Awake()
+
 		c.processing = true
 
 		if glog.V(4) {
@@ -220,8 +222,10 @@ func (c *piController) setProcessing(value bool) {
 	c.processing = value
 	if c.processing {
 		c.ledOk.Off()
+		c.motor.Awake()
 	} else {
 		c.ledOk.On()
+		c.motor.Sleep()
 	}
 }
 
@@ -294,7 +298,7 @@ func NewController() *piController {
 	r := raspi.NewAdaptor()
 	r.Connect()
 
-	motor := drivers.NewStepperMotorDriver(r, "39", "40", 1, 1)
+	motor := drivers.NewStepperMotorDriver(r, "38", "40", "36", 1, 1)
 	motor.Start()
 	camera := drivers.NewCameraDriver()
 	camera.Start()

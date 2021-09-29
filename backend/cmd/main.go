@@ -17,7 +17,7 @@ import (
 func init() {
 	flag.Parse()
 	if !isFlagPassed("v") {
-		flag.Set("v", "3")
+		flag.Set("v", "2")
 	}
 	flag.Set("logtostderr", "1")
 
