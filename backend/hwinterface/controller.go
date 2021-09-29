@@ -25,7 +25,7 @@ type piController struct {
 	gearTransmissionDriver *drivers.TransmissionFromStepperMotorDriver
 	camera                 *drivers.CameraDriver
 	buttonInput            *gpio.ButtonDriver
-	ledOk									*gpio.LedDriver
+	ledOk                  *gpio.LedDriver
 	mutex                  sync.RWMutex
 	actualProcessName      string
 	buttonPressFunc        func()
@@ -133,7 +133,7 @@ func (c *piController) StopProcess() error {
 	if glog.V(3) {
 		glog.Infoln("piController - StopProcess called")
 	}
-	
+
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 	if c.processing {
@@ -195,7 +195,7 @@ func (c *piController) canSetStartProcess() bool {
 	} else {
 		c.ledOk.Off()
 		c.processing = true
-		
+
 		if glog.V(4) {
 			glog.Infoln("piController - canSetStartProcess start processing")
 		}
@@ -218,7 +218,7 @@ func (c *piController) setProcessing(value bool) {
 		}
 	}
 	c.processing = value
-	if c.processing{
+	if c.processing {
 		c.ledOk.Off()
 	} else {
 		c.ledOk.On()
@@ -294,7 +294,7 @@ func NewController() *piController {
 	r := raspi.NewAdaptor()
 	r.Connect()
 
-	motor := drivers.NewStepperMotorDriver(r, "40", "39", 1, 1)
+	motor := drivers.NewStepperMotorDriver(r, "39", "40", 1, 1)
 	motor.Start()
 	camera := drivers.NewCameraDriver()
 	camera.Start()
