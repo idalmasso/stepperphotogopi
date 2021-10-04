@@ -31,12 +31,14 @@ func NewCameraDriver() *CameraDriver {
 		still:       raspicam.NewStill(),
 	}
 	l.still.Timeout = 1 * time.Second
-
 	l.still.Width = 2000
 	l.still.Height = 1500
 	l.still.Camera.Brightness = 50
 	l.still.Camera.Contrast = 0
 	l.still.Camera.Sharpness = 0
+	l.still.Camera.Saturation = 0
+	l.still.Camera.AWBMode = raspicam.AWBAuto
+
 	return l
 }
 
@@ -76,6 +78,35 @@ func (l *CameraDriver) SetContrast(contrast int) {
 }
 func (l *CameraDriver) SetSharpness(sharpness int) {
 	l.still.Camera.Sharpness = sharpness
+}
+func (l *CameraDriver) SetSaturation(saturation int) {
+	l.still.Camera.Saturation = saturation
+}
+func (l *CameraDriver) SetAWBMode(awbMode string) {
+	switch awbMode {
+	case "off":
+		l.still.Camera.AWBMode = raspicam.AWBOff
+	case "auto":
+		l.still.Camera.AWBMode = raspicam.AWBAuto
+	case "sun":
+		l.still.Camera.AWBMode = raspicam.AWBSunlight
+	case "cloud":
+		l.still.Camera.AWBMode = raspicam.AWBCloudy
+	case "shade":
+		l.still.Camera.AWBMode = raspicam.AWBShade
+	case "tungsten":
+		l.still.Camera.AWBMode = raspicam.AWBTungsten
+	case "fluorescent":
+		l.still.Camera.AWBMode = raspicam.AWBFluorescent
+	case "incandescent":
+		l.still.Camera.AWBMode = raspicam.AWBIncandescent
+	case "flash":
+		l.still.Camera.AWBMode = raspicam.AWBFlash
+	case "horizon":
+		l.still.Camera.AWBMode = raspicam.AWBHorizon
+	default:
+		l.still.Camera.AWBMode = raspicam.AWBAuto
+	}
 }
 
 // DoPhoto does a photo and write in the passed writer

@@ -12,12 +12,14 @@ type Config struct {
 		WaitForStep        int     `yaml:"waitForStep" json:"waitForStep,string"`
 		GearRatio          float64 `yaml:"gearRatio" json:"gearRatio,string"`
 		Camera             struct {
-			Height              int `yaml:"height" json:"height,string"`
-			Width               int `yaml:"width" json:"width,string"`
-			Brightness          int `yaml:"brightness" json:"brightness,string"`
-			Contrast            int `yaml:"contrast" json:"contrast,string"`
-			Sharpness           int `yaml:"sharpness" json:"sharpness,string"`
-			NumPhotosPerProcess int `yaml:"numPhotosPerProcess" json:"numPhotosPerProcess,string"`
+			Height              int    `yaml:"height" json:"height,string"`
+			Width               int    `yaml:"width" json:"width,string"`
+			Brightness          int    `yaml:"brightness" json:"brightness,string"`
+			Contrast            int    `yaml:"contrast" json:"contrast,string"`
+			Sharpness           int    `yaml:"sharpness" json:"sharpness,string"`
+			NumPhotosPerProcess int    `yaml:"numPhotosPerProcess" json:"numPhotosPerProcess,string"`
+			AWBMode             string `yaml:"awbMode" json:"awbMode,string"`
+			Saturation          int    `yaml:"saturation" json:"saturation,string"`
 		} `yaml:"camera" json:"camera"`
 	} `yaml:"hardware" json:"hardware"`
 	Server struct {
@@ -26,12 +28,12 @@ type Config struct {
 		Port                  string `yaml:"port" json:"port"`
 	} `yaml:"server" json:"server"`
 	ECommerce struct {
-		BaseUrl        string `yaml:"baseUrl" json:"baseUrl"`
-		TokensEndpoint string `yaml:"tokensEndpoint" json:"tokensEndpoint"`
-		ItemsListEndpoint                  string `yaml:"itemsListEndpoint" json:"itemsListEndpoint"`
-		PostImageEndpoint                  string `yaml:"postImageEndpoint" json:"postImageEndpoint"`
-		DefaultUsername										string `yaml:"defaultUsername" json:"defaultUsername"`
-		DefaultPassword										string `yaml:"defaultPassword" json:"defaultPassword"`
+		BaseUrl           string `yaml:"baseUrl" json:"baseUrl"`
+		TokensEndpoint    string `yaml:"tokensEndpoint" json:"tokensEndpoint"`
+		ItemsListEndpoint string `yaml:"itemsListEndpoint" json:"itemsListEndpoint"`
+		PostImageEndpoint string `yaml:"postImageEndpoint" json:"postImageEndpoint"`
+		DefaultUsername   string `yaml:"defaultUsername" json:"defaultUsername"`
+		DefaultPassword   string `yaml:"defaultPassword" json:"defaultPassword"`
 	} `yaml:"eCommerce" json:"eCommerce"`
 }
 

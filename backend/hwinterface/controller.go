@@ -287,6 +287,8 @@ func (c *piController) SetCameraHeight(height int)         { c.camera.SetHeight(
 func (c *piController) SetCameraContrast(contrast int)     { c.camera.SetContrast(contrast) }
 func (c *piController) SetCameraSharpness(sharpness int)   { c.camera.SetSharpness(sharpness) }
 func (c *piController) SetCameraBrightness(brightness int) { c.camera.SetBrightness(brightness) }
+func (c *piController) SetCameraSaturation(saturation int) { c.camera.SetSaturation(saturation) }
+func (c *piController) SetCameraAWB(awbMode string)        { c.camera.SetAWBMode(awbMode) }
 func (c *piController) SetOnButtonPress(callback func()) {
 	c.buttonPressFunc = callback
 }

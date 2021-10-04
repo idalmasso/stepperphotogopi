@@ -112,6 +112,30 @@
         </tr>
         <tr>
           <td>
+            <label for="saturation">Saturazione</label>
+          </td>
+          <td>
+            <input
+              id="saturation"
+              type="number"
+              v-model="configuration.hardware.camera.saturation"
+            />
+          </td>
+        </tr>
+         <tr>
+          <td>
+            <label for="awbMode">Modo compensazione bianco</label>
+          </td>
+          <td>
+            <select id="awbMode" v-model="configuration.hardware.camera.awbMode">
+              <option v-for="i in awbModes" :key="i" :value="i">{{
+                i
+              }}</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td>
             <label for="num-photo">Numero foto per ciclo</label>
           </td>
           <td>
@@ -285,6 +309,23 @@ export default {
           this.message = data
         })
     },
+  },
+  computed: {
+    awbModes(){
+      return ["off",
+      "auto",
+      "night",
+      "nightpreview",
+      "backlight",
+      "spotlight",
+      "sports",
+      "snow",
+      "beach",
+      "verylong",
+      "fixedfps",
+      "antishake",
+      "fireworks"]
+    }
   },
   mounted() {
     fetch('/api/configuration')

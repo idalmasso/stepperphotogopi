@@ -31,6 +31,8 @@ type controllerMachine interface {
 	SetCameraContrast(int)
 	SetCameraSharpness(int)
 	SetCameraBrightness(int)
+	SetCameraSaturation(saturation int)
+	SetCameraAWB(awbMode string)
 	SetOnButtonPress(callback func())
 }
 
@@ -108,8 +110,10 @@ func (s *MachineServer) updateMachineFromConfig() {
 	s.machine.SetCameraBrightness(s.configuration.Hardware.Camera.Brightness)
 	s.machine.SetCameraContrast(s.configuration.Hardware.Camera.Contrast)
 	s.machine.SetCameraSharpness(s.configuration.Hardware.Camera.Sharpness)
+	s.machine.SetCameraAWB(s.configuration.Hardware.Camera.AWBMode)
+	s.machine.SetCameraSaturation(s.configuration.Hardware.Camera.Saturation)
 	s.machine.SetOnButtonPress(func() {
-		if s.machine.IsWorking(){
+		if s.machine.IsWorking() {
 			s.machine.StopProcess()
 		} else {
 			s.machine.SetDegreesMovement(float64(360) / float64(s.configuration.Hardware.Camera.NumPhotosPerProcess))

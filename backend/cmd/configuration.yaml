@@ -9,6 +9,8 @@ hardware:
     contrast: 0
     sharpness: 0
     numPhotosPerProcess: 40
+    awbMode: auto
+    saturation: 0
 server:
   photoDirectory: ../../images
   distributionDirectory: ../../frontend/dist
