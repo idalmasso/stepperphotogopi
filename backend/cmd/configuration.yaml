@@ -14,7 +14,7 @@ hardware:
 server:
   photoDirectory: ../../images
   distributionDirectory: ../../frontend/dist
-  port: "3333"
+  port: 3333
 eCommerce:
   baseUrl: http://localhost:5000
   tokensEndpoint: /auth/tokens

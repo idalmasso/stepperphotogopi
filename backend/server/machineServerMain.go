@@ -4,6 +4,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -55,7 +56,7 @@ func (s *MachineServer) ListenAndServe() {
 	if glog.V(3) {
 		glog.Infoln("MachineServer -  MachineServer.starting on port", s.configuration.Server.Port)
 	}
-	if err := http.ListenAndServe(":"+s.configuration.Server.Port, s.Router); err != nil {
+	if err := http.ListenAndServe(":"+strconv.Itoa(s.configuration.Server.Port), s.Router); err != nil {
 		panic("Cannot listen on server: " + err.Error())
 	}
 }

@@ -1,5 +1,6 @@
 <template>
   <div>
+    <div class="error-text" v-if="error">{{ error }}</div>
     <h1>Configurazione</h1>
     <form>
       <table>
@@ -122,15 +123,16 @@
             />
           </td>
         </tr>
-         <tr>
+        <tr>
           <td>
             <label for="awbMode">Modo compensazione bianco</label>
           </td>
           <td>
-            <select id="awbMode" v-model="configuration.hardware.camera.awbMode">
-              <option v-for="i in awbModes" :key="i" :value="i">{{
-                i
-              }}</option>
+            <select
+              id="awbMode"
+              v-model="configuration.hardware.camera.awbMode"
+            >
+              <option v-for="i in awbModes" :key="i" :value="i">{{ i }}</option>
             </select>
           </td>
         </tr>
@@ -263,6 +265,7 @@ export default {
   name: 'ConfigurationView',
   data() {
     return {
+      error: '',
       message: '',
       configuration: {
         hardware: {
@@ -275,6 +278,8 @@ export default {
             brightness: 0,
             sharpness: 0,
             contrast: 0,
+            awbMode: 'auto',
+            saturation: 0,
           },
         },
         server: {
@@ -295,6 +300,8 @@ export default {
   },
   methods: {
     updateConfiguration() {
+      this.error = ''
+
       fetch('/api/configuration/', {
         method: 'PUT',
         headers: {
@@ -303,29 +310,38 @@ export default {
         body: JSON.stringify(this.configuration),
       })
         .then((a) => {
+          if (!a.ok) {
+            throw Error('Cannot save config')
+          }
           return a.json()
         })
         .then((data) => {
           this.message = data
         })
+        .catch((error) => {
+          console.log(error)
+          this.error = error
+        })
     },
   },
   computed: {
-    awbModes(){
-      return ["off",
-      "auto",
-      "night",
-      "nightpreview",
-      "backlight",
-      "spotlight",
-      "sports",
-      "snow",
-      "beach",
-      "verylong",
-      "fixedfps",
-      "antishake",
-      "fireworks"]
-    }
+    awbModes() {
+      return [
+        'off',
+        'auto',
+        'night',
+        'nightpreview',
+        'backlight',
+        'spotlight',
+        'sports',
+        'snow',
+        'beach',
+        'verylong',
+        'fixedfps',
+        'antishake',
+        'fireworks',
+      ]
+    },
   },
   mounted() {
     fetch('/api/configuration')

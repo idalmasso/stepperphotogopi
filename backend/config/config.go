@@ -18,14 +18,14 @@ type Config struct {
 			Contrast            int    `yaml:"contrast" json:"contrast,string"`
 			Sharpness           int    `yaml:"sharpness" json:"sharpness,string"`
 			NumPhotosPerProcess int    `yaml:"numPhotosPerProcess" json:"numPhotosPerProcess,string"`
-			AWBMode             string `yaml:"awbMode" json:"awbMode,string"`
+			AWBMode             string `yaml:"awbMode" json:"awbMode"`
 			Saturation          int    `yaml:"saturation" json:"saturation,string"`
 		} `yaml:"camera" json:"camera"`
 	} `yaml:"hardware" json:"hardware"`
 	Server struct {
 		PhotoDirectory        string `yaml:"photoDirectory" json:"photoDirectory"`
 		DistributionDirectory string `yaml:"distributionDirectory" json:"distributionDirectory"`
-		Port                  string `yaml:"port" json:"port"`
+		Port                  int `yaml:"port" json:"port,string"`
 	} `yaml:"server" json:"server"`
 	ECommerce struct {
 		BaseUrl           string `yaml:"baseUrl" json:"baseUrl"`

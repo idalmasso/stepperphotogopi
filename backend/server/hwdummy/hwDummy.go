@@ -251,6 +251,8 @@ func (c *dummyController) CameraSnapshot(w io.Writer) (err error) {
 	}
 	return
 }
+func (c *dummyController) SetCameraSaturation(saturation int) { return }
+func (c *dummyController) SetCameraAWB(awbMode string)        { return }
 
 func (c *dummyController) SetOnButtonPress(callback func()) {
 	

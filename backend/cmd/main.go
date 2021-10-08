@@ -34,7 +34,7 @@ func main() {
 	server := server.MachineServer{}
 	server.Init(controller)
 	server.ListenAndServe()
-}
+}	
 
 func isFlagPassed(name string) bool {
 	found := false
