@@ -176,14 +176,26 @@ export default {
 
       const upload = (i) => {
         console.log('Starting fetch' + i)
+        var is_webp = false
         return fetch(
           '/process-images/' + this.sendingProcess.name + '/' + i + '.webp'
         )
           .then((response) => {
             if (response.ok) {
+              is_webp = true
               return response.blob()
             } else {
-              throw 'Cannot get image ' + i
+              return fetch(
+                '/process-images/' + this.sendingProcess.name + '/' + i + '.jpg'
+              )
+              .then((response) => {
+                if (response.ok) {
+                  is_webp = false
+                  return response.blob()
+                } else {
+                  throw 'Cannot get image ' + i
+                }
+              }
             }
           })
           .then((bData) => {
@@ -197,7 +209,7 @@ export default {
                   'Content-Type': 'application/json',
                   Authorization: 'Bearer ' + this.token,
                 },
-                body: JSON.stringify({ image: src }), // This is your file object
+                body: JSON.stringify({ image: src, is_webp: is_webp }), // This is your file object
               })
                 .then(
                   (response) => response.json() // if the response is a JSON object

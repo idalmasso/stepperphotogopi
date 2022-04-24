@@ -15,6 +15,7 @@ server:
   photoDirectory: ../../images
   distributionDirectory: ../../frontend/dist
   port: 3333
+  saveAsWebP: false
 eCommerce:
   baseUrl: http://localhost:5000
   tokensEndpoint: /auth/tokens

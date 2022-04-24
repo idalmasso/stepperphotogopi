@@ -26,6 +26,7 @@ type Config struct {
 		PhotoDirectory        string `yaml:"photoDirectory" json:"photoDirectory"`
 		DistributionDirectory string `yaml:"distributionDirectory" json:"distributionDirectory"`
 		Port                  int `yaml:"port" json:"port,string"`
+		SaveAsWebP						bool `yaml:"saveAsWebP" json:"saveAsWebP"`
 	} `yaml:"server" json:"server"`
 	ECommerce struct {
 		BaseUrl           string `yaml:"baseUrl" json:"baseUrl"`

@@ -35,6 +35,7 @@ type controllerMachine interface {
 	SetCameraSaturation(saturation int)
 	SetCameraAWB(awbMode string)
 	SetOnButtonPress(callback func())
+	SetSaveAsWebP(bool)
 }
 
 //PiServer
@@ -113,6 +114,7 @@ func (s *MachineServer) updateMachineFromConfig() {
 	s.machine.SetCameraSharpness(s.configuration.Hardware.Camera.Sharpness)
 	s.machine.SetCameraAWB(s.configuration.Hardware.Camera.AWBMode)
 	s.machine.SetCameraSaturation(s.configuration.Hardware.Camera.Saturation)
+	s.machine.SetSaveAsWebP(s.configuration.Server.SaveAsWebP)
 	s.machine.SetOnButtonPress(func() {
 		if s.machine.IsWorking() {
 			s.machine.StopProcess()

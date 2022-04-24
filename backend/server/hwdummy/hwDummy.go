@@ -226,13 +226,13 @@ func (c *dummyController) GetGearRatio() float64 {
 	}
 	return 0
 }
-func (c *dummyController) SetCameraWidth(int)           { return }
-func (c *dummyController) SetCameraHeight(int)          { return }
-func (c *dummyController) SetCameraContrast(int)        { return }
-func (c *dummyController) SetCameraSharpness(int)       { return }
-func (c *dummyController) SetCameraBrightness(int)      { return }
+func (c *dummyController) SetCameraWidth(int)           {  }
+func (c *dummyController) SetCameraHeight(int)          {  }
+func (c *dummyController) SetCameraContrast(int)        {  }
+func (c *dummyController) SetCameraSharpness(int)       {  }
+func (c *dummyController) SetCameraBrightness(int)      {  }
 func (c *dummyController) GetActualProcessName() string { return c.actualProcessName }
-
+func (c *dummyController) SetSaveAsWebP(bool) {}
 //Writes a snapshot into the writer passed
 func (c *dummyController) CameraSnapshot(w io.Writer) (err error) {
 	m := image.NewRGBA(image.Rect(0, 0, 240, 240))
@@ -251,8 +251,8 @@ func (c *dummyController) CameraSnapshot(w io.Writer) (err error) {
 	}
 	return
 }
-func (c *dummyController) SetCameraSaturation(saturation int) { return }
-func (c *dummyController) SetCameraAWB(awbMode string)        { return }
+func (c *dummyController) SetCameraSaturation(saturation int) {  }
+func (c *dummyController) SetCameraAWB(awbMode string)        {  }
 
 func (c *dummyController) SetOnButtonPress(callback func()) {
 	

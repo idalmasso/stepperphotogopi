@@ -29,6 +29,7 @@ type piController struct {
 	mutex                  sync.RWMutex
 	actualProcessName      string
 	buttonPressFunc        func()
+	saveAsWebP							bool
 }
 
 func (c *piController) SetDegreesMovement(degrees float64) error {
@@ -91,37 +92,52 @@ func (c *piController) StartProcess(imagePath string) error {
 				}
 				return
 			}
+			if c.saveAsWebP{
+				var bytes bytes.Buffer
+				if err := c.CameraSnapshot(&bytes); err != nil {
+					if glog.V(1) {
+						glog.Errorln("piController - CameraSnapshot error", err.Error())
+					}
+					return
+				}
+				image, err := jpeg.Decode(&bytes)
+				if err != nil {
+					if glog.V(1) {
+						glog.Errorln("piController - CameraSnapshot error", err.Error())
+					}
+					return
+				}
+				file, err := os.Create(filepath.Join(newpath, strconv.FormatInt(int64(numPhoto), 10)+".webp"))
+				if err != nil {
+					if glog.V(1) {
+						glog.Errorln("piController - CameraSnapshot error on create photo file", newpath+"-"+strconv.FormatInt(int64(numPhoto), 10)+".webp", err.Error())
+					}
+					return
+				}
 
-			var bytes bytes.Buffer
-			if err := c.CameraSnapshot(&bytes); err != nil {
-				if glog.V(1) {
-					glog.Errorln("piController - CameraSnapshot error", err.Error())
-				}
-				return
-			}
-			image, err := jpeg.Decode(&bytes)
-			if err != nil {
-				if glog.V(1) {
-					glog.Errorln("piController - CameraSnapshot error", err.Error())
-				}
-				return
-			}
-			file, err := os.Create(filepath.Join(newpath, strconv.FormatInt(int64(numPhoto), 10)+".webp"))
-			if err != nil {
-				if glog.V(1) {
-					glog.Errorln("piController - CameraSnapshot error on create photo file", newpath+"-"+strconv.FormatInt(int64(numPhoto), 10)+".webp", err.Error())
-				}
-				return
-			}
-
-			if err = webpbin.Encode(file, image); err != nil {
-				if glog.V(1) {
-					glog.Errorln("piController - CameraSnapshot webpbin ", err.Error())
+				if err = webpbin.Encode(file, image); err != nil {
+					if glog.V(1) {
+						glog.Errorln("piController - CameraSnapshot webpbin ", err.Error())
+					}
+					file.Close()
+					return
 				}
 				file.Close()
-				return
+			} else {
+				file, err := os.Create(filepath.Join(newpath, strconv.FormatInt(int64(numPhoto), 10)+".jpg"))
+				if err != nil {
+					if glog.V(1) {
+						glog.Errorln("piController - CameraSnapshot error on create photo file", newpath+"-"+strconv.FormatInt(int64(numPhoto), 10)+".jpg", err.Error())
+					}
+					return
+				}
+				defer file.Close()
+				if err := c.CameraSnapshot(file); err != nil {
+					if glog.V(1) {
+						glog.Errorln("piController - CameraSnapshot error", err.Error())
+					}
+				}
 			}
-			file.Close()
 		}
 	}()
 
@@ -243,6 +259,14 @@ func (c *piController) SetMotorDegreePerStep(degrees float64) {
 	}
 	if !c.isProcessing() {
 		c.motor.SetDegreesPerStep(degrees)
+	}
+}
+func (c *piController) SetSaveAsWebP(saveAsWebP bool) {
+	if glog.V(3) {
+		glog.Infoln("piController - SetSaveAsWebP called w value", saveAsWebP)
+	}
+	if !c.processing {
+		c.saveAsWebP = saveAsWebP
 	}
 }
 

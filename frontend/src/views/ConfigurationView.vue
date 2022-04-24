@@ -176,6 +176,18 @@
           </td>
         </tr>
         <tr>
+          <td>
+            <label for="saveAsWebP">Salva come webp</label>
+          </td>
+          <td>
+            <input
+              id="saveAsWebP"
+              type="checkbox"
+              v-model="configuration.server.saveAsWebP"
+            />
+          </td>
+        </tr>
+        <tr>
           <h2>ECommerce</h2>
         </tr>
         <tr>
@@ -286,6 +298,7 @@ export default {
           photoDirectory: '',
           distributionDirectory: '',
           port: 3333,
+          saveAsWebP: false,
         },
         eCommerce: {
           baseUrl: '',
