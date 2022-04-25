@@ -187,15 +187,14 @@ export default {
             } else {
               return fetch(
                 '/process-images/' + this.sendingProcess.name + '/' + i + '.jpg'
-              )
-              .then((response) => {
+              ).then((response) => {
                 if (response.ok) {
                   is_webp = false
                   return response.blob()
                 } else {
                   throw 'Cannot get image ' + i
                 }
-              }
+              })
             }
           })
           .then((bData) => {
