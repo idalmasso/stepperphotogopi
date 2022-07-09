@@ -16,7 +16,7 @@ import (
 type CameraDriver struct {
 	name        string
 	connection  gpio.DigitalWriter
-	secondsWait int
+	useArducamCamera bool
 	still       *raspicam.Still
 	gobot.Commander
 }
@@ -26,9 +26,9 @@ type CameraDriver struct {
 func NewCameraDriver() *CameraDriver {
 	l := &CameraDriver{
 		name:        gobot.DefaultName("CAMERA"),
-		secondsWait: 1,
 		Commander:   gobot.NewCommander(),
 		still:       raspicam.NewStill(),
+		useArducamCamera: false,
 	}
 	l.still.Timeout = 1 * time.Second
 	l.still.Width = 2000
@@ -60,8 +60,8 @@ func (l *CameraDriver) Connection() gobot.Connection {
 }
 
 // SecondsWait return the number of Seconds to wait before photo
-func (l *CameraDriver) SecondsWait() int {
-	return l.secondsWait
+func (l *CameraDriver) SetSecondsWait(seconds time.Duration) {
+	l.still.Timeout = seconds*time.Second
 }
 
 func (l *CameraDriver) SetWidth(width int) {
@@ -108,7 +108,21 @@ func (l *CameraDriver) SetAWBMode(awbMode string) {
 		l.still.Camera.AWBMode = raspicam.AWBAuto
 	}
 }
-
+//SetUseArducamCamera sets the camera to be used as an arducam, so change the command and args to use autofocus
+func (l *CameraDriver) SetUseArducamCamera(useArducamCamera bool){
+	l.useArducamCamera=useArducamCamera
+	if useArducamCamera{
+		l.still.BaseStill.Command="libcamera-still"
+		l.still.BaseStill.Args=append(l.still.BaseStill.Args,"--autofocus")
+	} else {
+		l.still.BaseStill.Command=""
+		l.still.BaseStill.Args=make([]string, 0)
+	}
+}
+//GetUseArducamCamera is Getter for usearducam camera
+func (l *CameraDriver) GetUseArducamCamera() bool{
+	return l.useArducamCamera
+}
 // DoPhoto does a photo and write in the passed writer
 func (l *CameraDriver) DoPhoto(w io.Writer) (err error) {
 	errCh := make(chan error)

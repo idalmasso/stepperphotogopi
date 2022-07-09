@@ -188,6 +188,18 @@
           </td>
         </tr>
         <tr>
+          <td>
+            <label for="useArducamAufotocusCamera">Usa camera arducam</label>
+          </td>
+          <td>
+            <input
+              id="useArducamAufotocusCamera"
+              type="checkbox"
+              v-model="configuration.server.useArducamAufotocusCamera"
+            />
+          </td>
+        </tr>
+        <tr>
           <h2>ECommerce</h2>
         </tr>
         <tr>
@@ -299,6 +311,7 @@ export default {
           distributionDirectory: '',
           port: 3333,
           saveAsWebP: false,
+          useArducamAufotocusCamera: false,
         },
         eCommerce: {
           baseUrl: '',

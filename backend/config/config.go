@@ -27,6 +27,7 @@ type Config struct {
 		DistributionDirectory string `yaml:"distributionDirectory" json:"distributionDirectory"`
 		Port                  int `yaml:"port" json:"port,string"`
 		SaveAsWebP						bool `yaml:"saveAsWebP" json:"saveAsWebP"`
+		UseArducamAufotocusCamera		bool `yaml:"useArducamAufotocusCamera" json:"useArducamAufotocusCamera"`
 	} `yaml:"server" json:"server"`
 	ECommerce struct {
 		BaseUrl           string `yaml:"baseUrl" json:"baseUrl"`

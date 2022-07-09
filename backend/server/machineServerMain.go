@@ -34,6 +34,7 @@ type controllerMachine interface {
 	SetCameraBrightness(int)
 	SetCameraSaturation(saturation int)
 	SetCameraAWB(awbMode string)
+	SetUseArducamCamera(useArducamCamera bool)
 	SetOnButtonPress(callback func())
 	SetSaveAsWebP(bool)
 }
@@ -112,6 +113,7 @@ func (s *MachineServer) updateMachineFromConfig() {
 	s.machine.SetCameraBrightness(s.configuration.Hardware.Camera.Brightness)
 	s.machine.SetCameraContrast(s.configuration.Hardware.Camera.Contrast)
 	s.machine.SetCameraSharpness(s.configuration.Hardware.Camera.Sharpness)
+	s.machine.SetUseArducamCamera(s.configuration.Server.UseArducamAufotocusCamera)
 	s.machine.SetCameraAWB(s.configuration.Hardware.Camera.AWBMode)
 	s.machine.SetCameraSaturation(s.configuration.Hardware.Camera.Saturation)
 	s.machine.SetSaveAsWebP(s.configuration.Server.SaveAsWebP)

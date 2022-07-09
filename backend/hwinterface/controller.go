@@ -88,12 +88,17 @@ func (c *piController) StartProcess(imagePath string) error {
 			}
 			if err := c.gearTransmissionDriver.GoToAngle(actualAngle); err != nil {
 				if glog.V(1) {
-					glog.Errorln("piController - CameraSnapshot gotoangle error", err.Error())
+					glog.Errorln("piController - Geardriver gotoangle error", err.Error())
 				}
 				return
 			}
 			if c.saveAsWebP{
 				var bytes bytes.Buffer
+				if numPhoto==0{
+					c.camera.SetSecondsWait(6)
+				} else {
+					c.camera.SetSecondsWait(1)
+				}
 				if err := c.CameraSnapshot(&bytes); err != nil {
 					if glog.V(1) {
 						glog.Errorln("piController - CameraSnapshot error", err.Error())
@@ -252,7 +257,9 @@ func (c *piController) CameraSnapshot(w io.Writer) (err error) {
 	}
 	return c.camera.DoPhoto(w)
 }
-
+func (c*piController) SetUseArducamCamera(useArducamCamera bool){
+	c.camera.SetUseArducamCamera(useArducamCamera)
+}
 func (c *piController) SetMotorDegreePerStep(degrees float64) {
 	if glog.V(3) {
 		glog.Infoln("piController - piController.SetMotorDegreePerStep - start")

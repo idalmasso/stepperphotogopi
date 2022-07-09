@@ -16,6 +16,7 @@ server:
   distributionDirectory: ../../frontend/dist
   port: 3333
   saveAsWebP: false
+  useArducamAufotocusCamera: false
 eCommerce:
   baseUrl: http://localhost:5000
   tokensEndpoint: /auth/tokens
